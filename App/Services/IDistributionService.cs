@@ -1,0 +1,15 @@
+using DonationManagement.Api.DTOs;
+
+namespace DonationManagement.Api.Services
+{
+    public interface IDistributionService
+    {
+        Task<IEnumerable<DistributionResponse>> GetAllDistributionsAsync();
+        Task<DistributionResponse?> GetDistributionByIdAsync(int id);
+        Task<DistributionResponse> CreateDistributionAsync(DistributionRequest request);
+        Task<DistributionResponse?> UpdateDistributionAsync(int id, DistributionRequest request);
+        Task<bool> DeleteDistributionAsync(int id);
+        Task<IEnumerable<DistributionResponse>> GetDistributionsByCaseAsync(int caseId);
+        Task<DistributionResponse[]> DistributeEvenlyAsync(EvenDistributionRequest request);
+    }
+}

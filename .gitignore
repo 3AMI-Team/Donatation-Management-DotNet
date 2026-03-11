@@ -1,0 +1,31 @@
+# Build outputs
+**/bin/
+**/obj/
+
+# Visual Studio / VS Code / Rider
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+# NuGet
+**/packages/
+*.nupkg
+*.snupkg
+
+# Logs
+*.log
+
+# Local SDK/tooling
+.dotnet/
+
+# Local config/secrets
+.env
+**/appsettings.Development.json
+**/appsettings.Local.json
+**/appsettings.*.local.json
+secrets.json

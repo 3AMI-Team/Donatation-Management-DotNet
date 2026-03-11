@@ -1,0 +1,27 @@
+@DonationManagementApi_HostAddress = http://localhost:5234
+
+GET {{DonationManagementApi_HostAddress}}/api/cases
+Accept: application/json
+
+###
+
+POST {{DonationManagementApi_HostAddress}}/api/donors
+Content-Type: application/json
+
+{
+  "name": "Test Donor",
+  "email": "test@example.com",
+  "phone": "1234567890"
+}
+
+###
+
+POST {{DonationManagementApi_HostAddress}}/api/distributions/even
+Content-Type: application/json
+
+{
+  "totalAmount": 1000,
+  "autoDistribute": false
+}
+
+###
