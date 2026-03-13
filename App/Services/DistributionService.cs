@@ -23,6 +23,22 @@ namespace DonationManagement.Api.Services
                 .ToListAsync();
         }
 
+        public async Task<PaginatedResponse<DistributionResponse>> GetDistributionsPagedAsync(int page, int pageSize)
+        {
+            var (normalizedPage, normalizedPageSize) = Pagination.Normalize(page, pageSize);
+            var totalCount = await _context.Distributions.CountAsync();
+
+            var items = await _context.Distributions
+                .OrderBy(d => d.Id)
+                .Skip((normalizedPage - 1) * normalizedPageSize)
+                .Take(normalizedPageSize)
+                .Select(d => new DistributionResponse(d.Id, d.Amount, d.DistributionDate, d.Status, d.Recipient, d.CaseId, d.HandledByEmployeeId))
+                .ToListAsync();
+
+            var totalPages = Pagination.GetTotalPages(totalCount, normalizedPageSize);
+            return new PaginatedResponse<DistributionResponse>(items, normalizedPage, normalizedPageSize, totalCount, totalPages);
+        }
+
         public async Task<DistributionResponse?> GetDistributionByIdAsync(int id)
         {
             var distribution = await _context.Distributions

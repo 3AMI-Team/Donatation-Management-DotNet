@@ -5,6 +5,7 @@ namespace DonationManagement.Api.Services
     public interface IEmployeeService
     {
         Task<IEnumerable<EmployeeResponse>> GetAllEmployeesAsync();
+        Task<PaginatedResponse<EmployeeResponse>> GetEmployeesPagedAsync(int page, int pageSize);
         Task<EmployeeResponse?> GetEmployeeByIdAsync(int id);
         Task<EmployeeResponse> CreateEmployeeAsync(EmployeeRequest request);
         Task<EmployeeResponse?> UpdateEmployeeAsync(int id, EmployeeRequest request);

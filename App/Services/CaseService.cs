@@ -24,6 +24,22 @@ namespace DonationManagement.Api.Services
                 .ToListAsync();
         }
 
+        public async Task<PaginatedResponse<CaseResponse>> GetCasesPagedAsync(int page, int pageSize)
+        {
+            var (normalizedPage, normalizedPageSize) = Pagination.Normalize(page, pageSize);
+            var totalCount = await _context.Cases.CountAsync();
+
+            var items = await _context.Cases
+                .OrderBy(c => c.Id)
+                .Skip((normalizedPage - 1) * normalizedPageSize)
+                .Take(normalizedPageSize)
+                .Select(c => new CaseResponse(c.Id, c.Amount, c.Description, c.Status, c.Date, c.SupervisorId, c.DonorId, c.CategoryId))
+                .ToListAsync();
+
+            var totalPages = Pagination.GetTotalPages(totalCount, normalizedPageSize);
+            return new PaginatedResponse<CaseResponse>(items, normalizedPage, normalizedPageSize, totalCount, totalPages);
+        }
+
         public async Task<CaseResponse?> GetCaseByIdAsync(int id)
         {
             var caseEntity = await _context.Cases

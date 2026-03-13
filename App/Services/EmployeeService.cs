@@ -21,6 +21,22 @@ namespace DonationManagement.Api.Services
                 .ToListAsync();
         }
 
+        public async Task<PaginatedResponse<EmployeeResponse>> GetEmployeesPagedAsync(int page, int pageSize)
+        {
+            var (normalizedPage, normalizedPageSize) = Pagination.Normalize(page, pageSize);
+            var totalCount = await _context.Employees.CountAsync();
+
+            var items = await _context.Employees
+                .OrderBy(e => e.Id)
+                .Skip((normalizedPage - 1) * normalizedPageSize)
+                .Take(normalizedPageSize)
+                .Select(e => new EmployeeResponse(e.Id, e.Phone, e.Address, e.Email, e.Name, e.Role, e.Username))
+                .ToListAsync();
+
+            var totalPages = Pagination.GetTotalPages(totalCount, normalizedPageSize);
+            return new PaginatedResponse<EmployeeResponse>(items, normalizedPage, normalizedPageSize, totalCount, totalPages);
+        }
+
         public async Task<EmployeeResponse?> GetEmployeeByIdAsync(int id)
         {
             var employee = await _context.Employees.FindAsync(id);

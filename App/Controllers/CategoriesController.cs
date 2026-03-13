@@ -22,6 +22,13 @@ namespace DonationManagement.Api.Controllers
             return Ok(result);
         }
 
+        [HttpGet("paged")]
+        public async Task<ActionResult<PaginatedResponse<CategoryResponse>>> GetCategoriesPaged([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+        {
+            var result = await _categoryService.GetCategoriesPagedAsync(page, pageSize);
+            return Ok(result);
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<CategoryResponse>> GetCategoryById(int id)
         {

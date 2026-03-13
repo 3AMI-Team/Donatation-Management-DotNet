@@ -10,6 +10,7 @@ Example: `https://api.example.com`
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/api/employees` | Retrieve a list of all employees |
+| GET | `/api/employees/paged?page=1&pageSize=20` | Retrieve a paginated list of employees |
 | GET | `/api/employees/{id}` | Retrieve details of a specific employee by ID |
 | POST | `/api/employees` | Create a new employee |
 | PUT | `/api/employees/{id}` | Update an existing employee by ID |
@@ -24,6 +25,7 @@ Example: `https://api.example.com`
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/api/donors` | Retrieve a list of all donors |
+| GET | `/api/donors/paged?page=1&pageSize=20` | Retrieve a paginated list of donors |
 | GET | `/api/donors/{id}` | Retrieve details of a specific donor by ID |
 | POST | `/api/donors` | Create a new donor |
 | PUT | `/api/donors/{id}` | Update an existing donor by ID |
@@ -37,6 +39,7 @@ Example: `https://api.example.com`
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/api/categories` | Retrieve a list of all categories |
+| GET | `/api/categories/paged?page=1&pageSize=20` | Retrieve a paginated list of categories |
 | GET | `/api/categories/{id}` | Retrieve details of a specific category by ID |
 | POST | `/api/categories` | Create a new category |
 | PUT | `/api/categories/{id}` | Update an existing category by ID |
@@ -50,6 +53,7 @@ Example: `https://api.example.com`
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/api/cases` | Retrieve a list of all cases |
+| GET | `/api/cases/paged?page=1&pageSize=20` | Retrieve a paginated list of cases |
 | GET | `/api/cases/{id}` | Retrieve details of a specific case by ID |
 | POST | `/api/cases` | Create a new case |
 | PUT | `/api/cases/{id}` | Update an existing case by ID |
@@ -65,6 +69,7 @@ Example: `https://api.example.com`
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/api/distributions` | Retrieve a list of all distributions |
+| GET | `/api/distributions/paged?page=1&pageSize=20` | Retrieve a paginated list of distributions |
 | GET | `/api/distributions/{id}` | Retrieve details of a specific distribution by ID |
 | POST | `/api/distributions` | Create a new distribution |
 | PUT | `/api/distributions/{id}` | Update an existing distribution by ID |
@@ -78,5 +83,6 @@ Example: `https://api.example.com`
 
 - All endpoints accept and return JSON data.
 - Replace `{id}` and `{caseId}` in the paths with the actual integer identifiers.
+- For paged endpoints, `page` is 1-based and `pageSize` defaults to 20 with a maximum of 100.
 - For POST and PUT requests, include the appropriate request body as defined by the backend.
 - Authentication may be required; refer to the authentication documentation for details.

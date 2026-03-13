@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 
 namespace DonationManagement.Api.DTOs
 {
+    public record PaginatedResponse<T>(IReadOnlyList<T> Items, int Page, int PageSize, int TotalCount, int TotalPages);
+
     public record EmployeeRequest(string Phone, string Address, string Email, string Name, string Role, string Password, string Username);
     public record EmployeeResponse(int Id, string Phone, string Address, string Email, string Name, string Role, string Username);
 

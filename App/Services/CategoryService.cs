@@ -21,6 +21,22 @@ namespace DonationManagement.Api.Services
                 .ToListAsync();
         }
 
+        public async Task<PaginatedResponse<CategoryResponse>> GetCategoriesPagedAsync(int page, int pageSize)
+        {
+            var (normalizedPage, normalizedPageSize) = Pagination.Normalize(page, pageSize);
+            var totalCount = await _context.Categories.CountAsync();
+
+            var items = await _context.Categories
+                .OrderBy(c => c.Id)
+                .Skip((normalizedPage - 1) * normalizedPageSize)
+                .Take(normalizedPageSize)
+                .Select(c => new CategoryResponse(c.Id, c.Type, c.Description))
+                .ToListAsync();
+
+            var totalPages = Pagination.GetTotalPages(totalCount, normalizedPageSize);
+            return new PaginatedResponse<CategoryResponse>(items, normalizedPage, normalizedPageSize, totalCount, totalPages);
+        }
+
         public async Task<CategoryResponse?> GetCategoryByIdAsync(int id)
         {
             var category = await _context.Categories.FindAsync(id);

@@ -5,6 +5,7 @@ namespace DonationManagement.Api.Services
     public interface ICaseService
     {
         Task<IEnumerable<CaseResponse>> GetAllCasesAsync();
+        Task<PaginatedResponse<CaseResponse>> GetCasesPagedAsync(int page, int pageSize);
         Task<CaseResponse?> GetCaseByIdAsync(int id);
         Task<CaseResponse> CreateCaseAsync(CaseRequest request);
         Task<CaseResponse?> UpdateCaseAsync(int id, CaseRequest request);
