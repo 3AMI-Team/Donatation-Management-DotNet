@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using DonationManagement.Api.DTOs;
 using DonationManagement.Core;
 using DonationManagement.Core.Entities;
+using BCrypt.Net;
 
 namespace DonationManagement.Api.Services
 {
@@ -53,7 +54,7 @@ namespace DonationManagement.Api.Services
                 Email = request.Email,
                 Name = request.Name,
                 Role = request.Role,
-                Password = request.Password, // In real app, hash this
+                Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
                 Username = request.Username
             };
 
@@ -73,7 +74,7 @@ namespace DonationManagement.Api.Services
             employee.Email = request.Email;
             employee.Name = request.Name;
             employee.Role = request.Role;
-            employee.Password = request.Password; // In real app, hash this
+            employee.Password = BCrypt.Net.BCrypt.HashPassword(request.Password);
             employee.Username = request.Username;
 
             await _context.SaveChangesAsync();
