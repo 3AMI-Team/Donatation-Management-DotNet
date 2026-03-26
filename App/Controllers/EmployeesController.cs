@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using DonationManagement.Api.DTOs;
-using DonationManagement.Api.Services;
+using DonationManagement.Api.Services.Interfaces;
+
+using Microsoft.AspNetCore.Authorization;
 
 namespace DonationManagement.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class EmployeesController : ControllerBase

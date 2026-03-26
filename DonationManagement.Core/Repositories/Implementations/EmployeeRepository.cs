@@ -1,7 +1,8 @@
 using DonationManagement.Core.Entities;
 using Microsoft.EntityFrameworkCore;
+using DonationManagement.Core.Repositories.Interfaces;
 
-namespace DonationManagement.Core.Repositories
+namespace DonationManagement.Core.Repositories.Implementations
 {
     public class EmployeeRepository : Repository<Employee>, IEmployeeRepository
     {

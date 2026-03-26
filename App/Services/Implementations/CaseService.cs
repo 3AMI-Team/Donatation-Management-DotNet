@@ -1,9 +1,12 @@
 using DonationManagement.Api.DTOs;
+using DonationManagement.Api.Mappings;
+using DonationManagement.Api.Services;
+using DonationManagement.Api.Services.Interfaces;
 using DonationManagement.Core;
 using DonationManagement.Core.Entities;
-using DonationManagement.Core.Repositories;
+using DonationManagement.Core.Repositories.Interfaces;
 
-namespace DonationManagement.Api.Services
+namespace DonationManagement.Api.Services.Implementations
 {
     public class CaseService : ICaseService
     {
@@ -19,7 +22,7 @@ namespace DonationManagement.Api.Services
         public async Task<IEnumerable<CaseResponse>> GetAllCasesAsync()
         {
             var cases = await _caseRepo.GetAllAsync();
-            return cases.Select(c => new CaseResponse(c.Id, c.Amount, c.Description, c.Status, c.Date, c.SupervisorId, c.DonorId, c.CategoryId));
+            return cases.Select(c => c.ToResponse());
         }
 
         public async Task<PaginatedResponse<CaseResponse>> GetCasesPagedAsync(int page, int pageSize)
@@ -27,13 +30,8 @@ namespace DonationManagement.Api.Services
             var (normalizedPage, normalizedPageSize) = Pagination.Normalize(page, pageSize);
             var totalCount = await _caseRepo.CountAsync();
 
-            var cases = await _caseRepo.GetAllAsync();
-            var items = cases
-                .OrderBy(c => c.Id)
-                .Skip((normalizedPage - 1) * normalizedPageSize)
-                .Take(normalizedPageSize)
-                .Select(c => new CaseResponse(c.Id, c.Amount, c.Description, c.Status, c.Date, c.SupervisorId, c.DonorId, c.CategoryId))
-                .ToList();
+            var cases = await _caseRepo.GetPagedAsync(normalizedPage, normalizedPageSize);
+            var items = cases.Select(c => c.ToResponse()).ToList();
 
             var totalPages = Pagination.GetTotalPages(totalCount, normalizedPageSize);
             return new PaginatedResponse<CaseResponse>(items, normalizedPage, normalizedPageSize, totalCount, totalPages);
@@ -42,8 +40,7 @@ namespace DonationManagement.Api.Services
         public async Task<CaseResponse?> GetCaseByIdAsync(int id)
         {
             var caseEntity = await _caseRepo.GetByIdAsync(id);
-            return caseEntity == null ? null :
-                new CaseResponse(caseEntity.Id, caseEntity.Amount, caseEntity.Description, caseEntity.Status, caseEntity.Date, caseEntity.SupervisorId, caseEntity.DonorId, caseEntity.CategoryId);
+            return caseEntity?.ToResponse();
         }
 
         public async Task<CaseResponse> CreateCaseAsync(CaseRequest request)
@@ -62,7 +59,7 @@ namespace DonationManagement.Api.Services
             await _caseRepo.AddAsync(caseEntity);
             await _caseRepo.SaveChangesAsync();
 
-            return new CaseResponse(caseEntity.Id, caseEntity.Amount, caseEntity.Description, caseEntity.Status, caseEntity.Date, caseEntity.SupervisorId, caseEntity.DonorId, caseEntity.CategoryId);
+            return caseEntity.ToResponse();
         }
 
         public async Task<CaseResponse?> UpdateCaseAsync(int id, CaseRequest request)
@@ -81,7 +78,7 @@ namespace DonationManagement.Api.Services
             _caseRepo.Update(caseEntity);
             await _caseRepo.SaveChangesAsync();
 
-            return new CaseResponse(caseEntity.Id, caseEntity.Amount, caseEntity.Description, caseEntity.Status, caseEntity.Date, caseEntity.SupervisorId, caseEntity.DonorId, caseEntity.CategoryId);
+            return caseEntity.ToResponse();
         }
 
         public async Task<bool> DeleteCaseAsync(int id)
@@ -97,7 +94,7 @@ namespace DonationManagement.Api.Services
         public async Task<IEnumerable<DistributionResponse>> GetCaseDistributionsAsync(int caseId)
         {
             var distributions = await _distributionRepo.FindAsync(d => d.CaseId == caseId);
-            return distributions.Select(d => new DistributionResponse(d.Id, d.Amount, d.DistributionDate, d.Status, d.Recipient, d.CaseId, d.HandledByEmployeeId));
+            return distributions.Select(d => d.ToResponse());
         }
 
         public async Task<decimal> GetRemainingAmountNeededAsync(int caseId)

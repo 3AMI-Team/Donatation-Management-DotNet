@@ -1,6 +1,4 @@
-using DonationManagement.Api.DTOs;
-
-namespace DonationManagement.Api.Services
+namespace DonationManagement.Api.Services.Interfaces
 {
     public interface IDonorService
     {

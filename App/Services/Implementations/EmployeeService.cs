@@ -1,10 +1,13 @@
 using DonationManagement.Api.DTOs;
+using DonationManagement.Api.Mappings;
+using DonationManagement.Api.Services;
+using DonationManagement.Api.Services.Interfaces;
 using DonationManagement.Core;
 using DonationManagement.Core.Entities;
-using DonationManagement.Core.Repositories;
+using DonationManagement.Core.Repositories.Interfaces;
 using BCrypt.Net;
 
-namespace DonationManagement.Api.Services
+namespace DonationManagement.Api.Services.Implementations
 {
     public class EmployeeService : IEmployeeService
     {
@@ -13,25 +16,28 @@ namespace DonationManagement.Api.Services
         private readonly ICategoryRepository _categoryRepo;
         private readonly ICaseRepository _caseRepo;
         private readonly IDistributionRepository _distributionRepo;
+        private readonly IJwtTokenService _jwtTokenService;
 
         public EmployeeService(
             IEmployeeRepository employeeRepo,
             IDonorRepository donorRepo,
             ICategoryRepository categoryRepo,
             ICaseRepository caseRepo,
-            IDistributionRepository distributionRepo)
+            IDistributionRepository distributionRepo,
+            IJwtTokenService jwtTokenService)
         {
             _employeeRepo = employeeRepo;
             _donorRepo = donorRepo;
             _categoryRepo = categoryRepo;
             _caseRepo = caseRepo;
             _distributionRepo = distributionRepo;
+            _jwtTokenService = jwtTokenService;
         }
 
         public async Task<IEnumerable<EmployeeResponse>> GetAllEmployeesAsync()
         {
             var employees = await _employeeRepo.GetAllAsync();
-            return employees.Select(e => new EmployeeResponse(e.Id, e.Phone, e.Address, e.Email, e.Name, e.Role, e.Username));
+            return employees.Select(e => e.ToResponse());
         }
 
         public async Task<PaginatedResponse<EmployeeResponse>> GetEmployeesPagedAsync(int page, int pageSize)
@@ -39,13 +45,8 @@ namespace DonationManagement.Api.Services
             var (normalizedPage, normalizedPageSize) = Pagination.Normalize(page, pageSize);
             var totalCount = await _employeeRepo.CountAsync();
 
-            var employees = await _employeeRepo.GetAllAsync(); // Note: Ideally, the repo should handle paging
-            var items = employees
-                .OrderBy(e => e.Id)
-                .Skip((normalizedPage - 1) * normalizedPageSize)
-                .Take(normalizedPageSize)
-                .Select(e => new EmployeeResponse(e.Id, e.Phone, e.Address, e.Email, e.Name, e.Role, e.Username))
-                .ToList();
+            var employees = await _employeeRepo.GetPagedAsync(normalizedPage, normalizedPageSize);
+            var items = employees.Select(e => e.ToResponse()).ToList();
 
             var totalPages = Pagination.GetTotalPages(totalCount, normalizedPageSize);
             return new PaginatedResponse<EmployeeResponse>(items, normalizedPage, normalizedPageSize, totalCount, totalPages);
@@ -54,8 +55,7 @@ namespace DonationManagement.Api.Services
         public async Task<EmployeeResponse?> GetEmployeeByIdAsync(int id)
         {
             var employee = await _employeeRepo.GetByIdAsync(id);
-            return employee == null ? null :
-                new EmployeeResponse(employee.Id, employee.Phone, employee.Address, employee.Email, employee.Name, employee.Role, employee.Username);
+            return employee?.ToResponse();
         }
 
         public async Task<EmployeeResponse> CreateEmployeeAsync(EmployeeRequest request)
@@ -74,7 +74,7 @@ namespace DonationManagement.Api.Services
             await _employeeRepo.AddAsync(employee);
             await _employeeRepo.SaveChangesAsync();
 
-            return new EmployeeResponse(employee.Id, employee.Phone, employee.Address, employee.Email, employee.Name, employee.Role, employee.Username);
+            return employee.ToResponse();
         }
 
         public async Task<EmployeeResponse?> UpdateEmployeeAsync(int id, EmployeeRequest request)
@@ -93,7 +93,7 @@ namespace DonationManagement.Api.Services
             _employeeRepo.Update(employee);
             await _employeeRepo.SaveChangesAsync();
 
-            return new EmployeeResponse(employee.Id, employee.Phone, employee.Address, employee.Email, employee.Name, employee.Role, employee.Username);
+            return employee.ToResponse();
         }
 
         public async Task<bool> DeleteEmployeeAsync(int id)
@@ -109,13 +109,13 @@ namespace DonationManagement.Api.Services
         public async Task<IEnumerable<CaseResponse>> GetRegisteredCasesAsync(int employeeId)
         {
             var cases = await _caseRepo.FindAsync(c => c.SupervisorId == employeeId);
-            return cases.Select(c => new CaseResponse(c.Id, c.Amount, c.Description, c.Status, c.Date, c.SupervisorId, c.DonorId, c.CategoryId));
+            return cases.Select(c => c.ToResponse());
         }
 
         public async Task<IEnumerable<DistributionResponse>> GetHandledDistributionsAsync(int employeeId)
         {
             var distributions = await _distributionRepo.FindAsync(d => d.HandledByEmployeeId == employeeId);
-            return distributions.Select(d => new DistributionResponse(d.Id, d.Amount, d.DistributionDate, d.Status, d.Recipient, d.CaseId, d.HandledByEmployeeId));
+            return distributions.Select(d => d.ToResponse());
         }
 
         // Employee management functions for donors, categories, cases
@@ -132,7 +132,7 @@ namespace DonationManagement.Api.Services
             await _donorRepo.AddAsync(donor);
             await _donorRepo.SaveChangesAsync();
 
-            return new DonorResponse(donor.Id, donor.Name, donor.Email, donor.Phone, donor.RegisterDate);
+            return donor.ToResponse();
         }
 
         public async Task<bool> DeleteDonorAsync(int id)
@@ -156,7 +156,7 @@ namespace DonationManagement.Api.Services
             await _categoryRepo.AddAsync(category);
             await _categoryRepo.SaveChangesAsync();
 
-            return new CategoryResponse(category.Id, category.Type, category.Description);
+            return category.ToResponse();
         }
 
         public async Task<bool> DeleteCategoryAsync(int id)
@@ -185,7 +185,7 @@ namespace DonationManagement.Api.Services
             await _caseRepo.AddAsync(caseEntity);
             await _caseRepo.SaveChangesAsync();
 
-            return new CaseResponse(caseEntity.Id, caseEntity.Amount, caseEntity.Description, caseEntity.Status, caseEntity.Date, caseEntity.SupervisorId, caseEntity.DonorId, caseEntity.CategoryId);
+            return caseEntity.ToResponse();
         }
 
         public async Task<bool> DeleteCaseAsync(int id)
@@ -208,11 +208,14 @@ namespace DonationManagement.Api.Services
                 return null;
             }
 
+            var token = _jwtTokenService.GenerateToken(employee.Username, employee.Role);
+
             return new AuthResponse(
                 employee.Id,
                 employee.Name,
                 employee.Username,
-                employee.Role
+                employee.Role,
+                token
             );
         }
     }

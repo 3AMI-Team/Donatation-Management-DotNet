@@ -1,9 +1,12 @@
 using DonationManagement.Api.DTOs;
+using DonationManagement.Api.Mappings;
+using DonationManagement.Api.Services;
+using DonationManagement.Api.Services.Interfaces;
 using DonationManagement.Core;
 using DonationManagement.Core.Entities;
-using DonationManagement.Core.Repositories;
+using DonationManagement.Core.Repositories.Interfaces;
 
-namespace DonationManagement.Api.Services
+namespace DonationManagement.Api.Services.Implementations
 {
     public class DistributionService : IDistributionService
     {
@@ -19,7 +22,7 @@ namespace DonationManagement.Api.Services
         public async Task<IEnumerable<DistributionResponse>> GetAllDistributionsAsync()
         {
             var distributions = await _distributionRepo.GetAllAsync();
-            return distributions.Select(d => new DistributionResponse(d.Id, d.Amount, d.DistributionDate, d.Status, d.Recipient, d.CaseId, d.HandledByEmployeeId));
+            return distributions.Select(d => d.ToResponse());
         }
 
         public async Task<PaginatedResponse<DistributionResponse>> GetDistributionsPagedAsync(int page, int pageSize)
@@ -27,13 +30,8 @@ namespace DonationManagement.Api.Services
             var (normalizedPage, normalizedPageSize) = Pagination.Normalize(page, pageSize);
             var totalCount = await _distributionRepo.CountAsync();
 
-            var distributions = await _distributionRepo.GetAllAsync();
-            var items = distributions
-                .OrderBy(d => d.Id)
-                .Skip((normalizedPage - 1) * normalizedPageSize)
-                .Take(normalizedPageSize)
-                .Select(d => new DistributionResponse(d.Id, d.Amount, d.DistributionDate, d.Status, d.Recipient, d.CaseId, d.HandledByEmployeeId))
-                .ToList();
+            var distributions = await _distributionRepo.GetPagedAsync(normalizedPage, normalizedPageSize);
+            var items = distributions.Select(d => d.ToResponse()).ToList();
 
             var totalPages = Pagination.GetTotalPages(totalCount, normalizedPageSize);
             return new PaginatedResponse<DistributionResponse>(items, normalizedPage, normalizedPageSize, totalCount, totalPages);
@@ -42,8 +40,7 @@ namespace DonationManagement.Api.Services
         public async Task<DistributionResponse?> GetDistributionByIdAsync(int id)
         {
             var distribution = await _distributionRepo.GetByIdAsync(id);
-            return distribution == null ? null :
-                new DistributionResponse(distribution.Id, distribution.Amount, distribution.DistributionDate, distribution.Status, distribution.Recipient, distribution.CaseId, distribution.HandledByEmployeeId);
+            return distribution?.ToResponse();
         }
 
         public async Task<DistributionResponse> CreateDistributionAsync(DistributionRequest request)
@@ -61,7 +58,7 @@ namespace DonationManagement.Api.Services
             await _distributionRepo.AddAsync(distribution);
             await _distributionRepo.SaveChangesAsync();
 
-            return new DistributionResponse(distribution.Id, distribution.Amount, distribution.DistributionDate, distribution.Status, distribution.Recipient, distribution.CaseId, distribution.HandledByEmployeeId);
+            return distribution.ToResponse();
         }
 
         public async Task<DistributionResponse?> UpdateDistributionAsync(int id, DistributionRequest request)
@@ -79,7 +76,7 @@ namespace DonationManagement.Api.Services
             _distributionRepo.Update(distribution);
             await _distributionRepo.SaveChangesAsync();
 
-            return new DistributionResponse(distribution.Id, distribution.Amount, distribution.DistributionDate, distribution.Status, distribution.Recipient, distribution.CaseId, distribution.HandledByEmployeeId);
+            return distribution.ToResponse();
         }
 
         public async Task<bool> DeleteDistributionAsync(int id)
@@ -95,7 +92,7 @@ namespace DonationManagement.Api.Services
         public async Task<IEnumerable<DistributionResponse>> GetDistributionsByCaseAsync(int caseId)
         {
             var distributions = await _distributionRepo.FindAsync(d => d.CaseId == caseId);
-            return distributions.Select(d => new DistributionResponse(d.Id, d.Amount, d.DistributionDate, d.Status, d.Recipient, d.CaseId, d.HandledByEmployeeId));
+            return distributions.Select(d => d.ToResponse());
         }
 
         public async Task<DistributionResponse[]> DistributeEvenlyAsync(EvenDistributionRequest request)
@@ -145,7 +142,7 @@ namespace DonationManagement.Api.Services
             await _distributionRepo.SaveChangesAsync();
 
             return distributions
-                .Select(d => new DistributionResponse(d.Id, d.Amount, d.DistributionDate, d.Status, d.Recipient, d.CaseId, d.HandledByEmployeeId))
+                .Select(d => d.ToResponse())
                 .ToArray();
         }
     }

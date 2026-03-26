@@ -1,9 +1,12 @@
 using DonationManagement.Api.DTOs;
+using DonationManagement.Api.Mappings;
+using DonationManagement.Api.Services;
+using DonationManagement.Api.Services.Interfaces;
 using DonationManagement.Core;
 using DonationManagement.Core.Entities;
-using DonationManagement.Core.Repositories;
+using DonationManagement.Core.Repositories.Interfaces;
 
-namespace DonationManagement.Api.Services
+namespace DonationManagement.Api.Services.Implementations
 {
     public class CategoryService : ICategoryService
     {
@@ -19,7 +22,7 @@ namespace DonationManagement.Api.Services
         public async Task<IEnumerable<CategoryResponse>> GetAllCategoriesAsync()
         {
             var categories = await _categoryRepo.GetAllAsync();
-            return categories.Select(c => new CategoryResponse(c.Id, c.Type, c.Description));
+            return categories.Select(c => c.ToResponse());
         }
 
         public async Task<PaginatedResponse<CategoryResponse>> GetCategoriesPagedAsync(int page, int pageSize)
@@ -27,13 +30,8 @@ namespace DonationManagement.Api.Services
             var (normalizedPage, normalizedPageSize) = Pagination.Normalize(page, pageSize);
             var totalCount = await _categoryRepo.CountAsync();
 
-            var categories = await _categoryRepo.GetAllAsync();
-            var items = categories
-                .OrderBy(c => c.Id)
-                .Skip((normalizedPage - 1) * normalizedPageSize)
-                .Take(normalizedPageSize)
-                .Select(c => new CategoryResponse(c.Id, c.Type, c.Description))
-                .ToList();
+            var categories = await _categoryRepo.GetPagedAsync(normalizedPage, normalizedPageSize);
+            var items = categories.Select(c => c.ToResponse()).ToList();
 
             var totalPages = Pagination.GetTotalPages(totalCount, normalizedPageSize);
             return new PaginatedResponse<CategoryResponse>(items, normalizedPage, normalizedPageSize, totalCount, totalPages);
@@ -42,8 +40,7 @@ namespace DonationManagement.Api.Services
         public async Task<CategoryResponse?> GetCategoryByIdAsync(int id)
         {
             var category = await _categoryRepo.GetByIdAsync(id);
-            return category == null ? null :
-                new CategoryResponse(category.Id, category.Type, category.Description);
+            return category?.ToResponse();
         }
 
         public async Task<CategoryResponse> CreateCategoryAsync(CategoryRequest request)
@@ -57,7 +54,7 @@ namespace DonationManagement.Api.Services
             await _categoryRepo.AddAsync(category);
             await _categoryRepo.SaveChangesAsync();
 
-            return new CategoryResponse(category.Id, category.Type, category.Description);
+            return category.ToResponse();
         }
 
         public async Task<CategoryResponse?> UpdateCategoryAsync(int id, CategoryRequest request)
@@ -71,7 +68,7 @@ namespace DonationManagement.Api.Services
             _categoryRepo.Update(category);
             await _categoryRepo.SaveChangesAsync();
 
-            return new CategoryResponse(category.Id, category.Type, category.Description);
+            return category.ToResponse();
         }
 
         public async Task<bool> DeleteCategoryAsync(int id)
@@ -87,7 +84,7 @@ namespace DonationManagement.Api.Services
         public async Task<IEnumerable<CaseResponse>> GetCategoryCasesAsync(int categoryId)
         {
             var cases = await _caseRepo.FindAsync(c => c.CategoryId == categoryId);
-            return cases.Select(c => new CaseResponse(c.Id, c.Amount, c.Description, c.Status, c.Date, c.SupervisorId, c.DonorId, c.CategoryId));
+            return cases.Select(c => c.ToResponse());
         }
     }
 }

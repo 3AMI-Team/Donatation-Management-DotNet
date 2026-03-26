@@ -1,7 +1,8 @@
-using Microsoft.EntityFrameworkCore;
+using DonationManagement.Core.Repositories.Interfaces;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
-namespace DonationManagement.Core.Repositories
+namespace DonationManagement.Core.Repositories.Implementations
 {
     public class Repository<T> : IRepository<T> where T : class
     {
@@ -17,6 +18,14 @@ namespace DonationManagement.Core.Repositories
         public async Task<IEnumerable<T>> GetAllAsync()
         {
             return await _dbSet.ToListAsync();
+        }
+
+        public async Task<IEnumerable<T>> GetPagedAsync(int page, int pageSize)
+        {
+            return await _dbSet
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
         }
 
         public async Task<T?> GetByIdAsync(int id)

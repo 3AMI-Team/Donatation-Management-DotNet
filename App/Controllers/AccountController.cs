@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using DonationManagement.Api.DTOs;
-using DonationManagement.Api.Services;
+using DonationManagement.Api.Services.Interfaces;
 
 namespace DonationManagement.Api.Controllers
 {

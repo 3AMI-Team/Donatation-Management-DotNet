@@ -1,9 +1,12 @@
 using DonationManagement.Api.DTOs;
+using DonationManagement.Api.Mappings;
+using DonationManagement.Api.Services;
+using DonationManagement.Api.Services.Interfaces;
 using DonationManagement.Core;
 using DonationManagement.Core.Entities;
-using DonationManagement.Core.Repositories;
+using DonationManagement.Core.Repositories.Interfaces;
 
-namespace DonationManagement.Api.Services
+namespace DonationManagement.Api.Services.Implementations
 {
     public class DonorService : IDonorService
     {
@@ -19,7 +22,7 @@ namespace DonationManagement.Api.Services
         public async Task<IEnumerable<DonorResponse>> GetAllDonorsAsync()
         {
             var donors = await _donorRepo.GetAllAsync();
-            return donors.Select(d => new DonorResponse(d.Id, d.Name, d.Email, d.Phone, d.RegisterDate));
+            return donors.Select(d => d.ToResponse());
         }
 
         public async Task<PaginatedResponse<DonorResponse>> GetDonorsPagedAsync(int page, int pageSize)
@@ -27,13 +30,8 @@ namespace DonationManagement.Api.Services
             var (normalizedPage, normalizedPageSize) = Pagination.Normalize(page, pageSize);
             var totalCount = await _donorRepo.CountAsync();
 
-            var donors = await _donorRepo.GetAllAsync();
-            var items = donors
-                .OrderBy(d => d.Id)
-                .Skip((normalizedPage - 1) * normalizedPageSize)
-                .Take(normalizedPageSize)
-                .Select(d => new DonorResponse(d.Id, d.Name, d.Email, d.Phone, d.RegisterDate))
-                .ToList();
+            var donors = await _donorRepo.GetPagedAsync(normalizedPage, normalizedPageSize);
+            var items = donors.Select(d => d.ToResponse()).ToList();
 
             var totalPages = Pagination.GetTotalPages(totalCount, normalizedPageSize);
             return new PaginatedResponse<DonorResponse>(items, normalizedPage, normalizedPageSize, totalCount, totalPages);
@@ -42,8 +40,7 @@ namespace DonationManagement.Api.Services
         public async Task<DonorResponse?> GetDonorByIdAsync(int id)
         {
             var donor = await _donorRepo.GetByIdAsync(id);
-            return donor == null ? null :
-                new DonorResponse(donor.Id, donor.Name, donor.Email, donor.Phone, donor.RegisterDate);
+            return donor?.ToResponse();
         }
 
         public async Task<DonorResponse> CreateDonorAsync(DonorRequest request)
@@ -59,7 +56,7 @@ namespace DonationManagement.Api.Services
             await _donorRepo.AddAsync(donor);
             await _donorRepo.SaveChangesAsync();
 
-            return new DonorResponse(donor.Id, donor.Name, donor.Email, donor.Phone, donor.RegisterDate);
+            return donor.ToResponse();
         }
 
         public async Task<DonorResponse?> UpdateDonorAsync(int id, DonorRequest request)
@@ -74,7 +71,7 @@ namespace DonationManagement.Api.Services
             _donorRepo.Update(donor);
             await _donorRepo.SaveChangesAsync();
 
-            return new DonorResponse(donor.Id, donor.Name, donor.Email, donor.Phone, donor.RegisterDate);
+            return donor.ToResponse();
         }
 
         public async Task<bool> DeleteDonorAsync(int id)
@@ -90,7 +87,7 @@ namespace DonationManagement.Api.Services
         public async Task<IEnumerable<CaseResponse>> GetDonorCasesAsync(int donorId)
         {
             var cases = await _caseRepo.FindAsync(c => c.DonorId == donorId);
-            return cases.Select(c => new CaseResponse(c.Id, c.Amount, c.Description, c.Status, c.Date, c.SupervisorId, c.DonorId, c.CategoryId));
+            return cases.Select(c => c.ToResponse());
         }
     }
 }
