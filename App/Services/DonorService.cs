@@ -1,37 +1,39 @@
-using Microsoft.EntityFrameworkCore;
 using DonationManagement.Api.DTOs;
 using DonationManagement.Core;
 using DonationManagement.Core.Entities;
+using DonationManagement.Core.Repositories;
 
 namespace DonationManagement.Api.Services
 {
     public class DonorService : IDonorService
     {
-        private readonly DonationDbContext _context;
+        private readonly IDonorRepository _donorRepo;
+        private readonly ICaseRepository _caseRepo;
 
-        public DonorService(DonationDbContext context)
+        public DonorService(IDonorRepository donorRepo, ICaseRepository caseRepo)
         {
-            _context = context;
+            _donorRepo = donorRepo;
+            _caseRepo = caseRepo;
         }
 
         public async Task<IEnumerable<DonorResponse>> GetAllDonorsAsync()
         {
-            return await _context.Donors
-                .Select(d => new DonorResponse(d.Id, d.Name, d.Email, d.Phone, d.RegisterDate))
-                .ToListAsync();
+            var donors = await _donorRepo.GetAllAsync();
+            return donors.Select(d => new DonorResponse(d.Id, d.Name, d.Email, d.Phone, d.RegisterDate));
         }
 
         public async Task<PaginatedResponse<DonorResponse>> GetDonorsPagedAsync(int page, int pageSize)
         {
             var (normalizedPage, normalizedPageSize) = Pagination.Normalize(page, pageSize);
-            var totalCount = await _context.Donors.CountAsync();
+            var totalCount = await _donorRepo.CountAsync();
 
-            var items = await _context.Donors
+            var donors = await _donorRepo.GetAllAsync();
+            var items = donors
                 .OrderBy(d => d.Id)
                 .Skip((normalizedPage - 1) * normalizedPageSize)
                 .Take(normalizedPageSize)
                 .Select(d => new DonorResponse(d.Id, d.Name, d.Email, d.Phone, d.RegisterDate))
-                .ToListAsync();
+                .ToList();
 
             var totalPages = Pagination.GetTotalPages(totalCount, normalizedPageSize);
             return new PaginatedResponse<DonorResponse>(items, normalizedPage, normalizedPageSize, totalCount, totalPages);
@@ -39,7 +41,7 @@ namespace DonationManagement.Api.Services
 
         public async Task<DonorResponse?> GetDonorByIdAsync(int id)
         {
-            var donor = await _context.Donors.FindAsync(id);
+            var donor = await _donorRepo.GetByIdAsync(id);
             return donor == null ? null :
                 new DonorResponse(donor.Id, donor.Name, donor.Email, donor.Phone, donor.RegisterDate);
         }
@@ -54,42 +56,41 @@ namespace DonationManagement.Api.Services
                 RegisterDate = DateTime.UtcNow
             };
 
-            _context.Donors.Add(donor);
-            await _context.SaveChangesAsync();
+            await _donorRepo.AddAsync(donor);
+            await _donorRepo.SaveChangesAsync();
 
             return new DonorResponse(donor.Id, donor.Name, donor.Email, donor.Phone, donor.RegisterDate);
         }
 
         public async Task<DonorResponse?> UpdateDonorAsync(int id, DonorRequest request)
         {
-            var donor = await _context.Donors.FindAsync(id);
+            var donor = await _donorRepo.GetByIdAsync(id);
             if (donor == null) return null;
 
             donor.Name = request.Name;
             donor.Email = request.Email;
             donor.Phone = request.Phone;
 
-            await _context.SaveChangesAsync();
+            _donorRepo.Update(donor);
+            await _donorRepo.SaveChangesAsync();
 
             return new DonorResponse(donor.Id, donor.Name, donor.Email, donor.Phone, donor.RegisterDate);
         }
 
         public async Task<bool> DeleteDonorAsync(int id)
         {
-            var donor = await _context.Donors.FindAsync(id);
+            var donor = await _donorRepo.GetByIdAsync(id);
             if (donor == null) return false;
 
-            _context.Donors.Remove(donor);
-            await _context.SaveChangesAsync();
+            _donorRepo.Remove(donor);
+            await _donorRepo.SaveChangesAsync();
             return true;
         }
 
         public async Task<IEnumerable<CaseResponse>> GetDonorCasesAsync(int donorId)
         {
-            return await _context.Cases
-                .Where(c => c.DonorId == donorId)
-                .Select(c => new CaseResponse(c.Id, c.Amount, c.Description, c.Status, c.Date, c.SupervisorId, c.DonorId, c.CategoryId))
-                .ToListAsync();
+            var cases = await _caseRepo.FindAsync(c => c.DonorId == donorId);
+            return cases.Select(c => new CaseResponse(c.Id, c.Amount, c.Description, c.Status, c.Date, c.SupervisorId, c.DonorId, c.CategoryId));
         }
     }
 }

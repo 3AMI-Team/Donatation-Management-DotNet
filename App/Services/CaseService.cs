@@ -1,40 +1,39 @@
-using Microsoft.EntityFrameworkCore;
 using DonationManagement.Api.DTOs;
 using DonationManagement.Core;
 using DonationManagement.Core.Entities;
+using DonationManagement.Core.Repositories;
 
 namespace DonationManagement.Api.Services
 {
     public class CaseService : ICaseService
     {
-        private readonly DonationDbContext _context;
+        private readonly ICaseRepository _caseRepo;
+        private readonly IDistributionRepository _distributionRepo;
 
-        public CaseService(DonationDbContext context)
+        public CaseService(ICaseRepository caseRepo, IDistributionRepository distributionRepo)
         {
-            _context = context;
+            _caseRepo = caseRepo;
+            _distributionRepo = distributionRepo;
         }
 
         public async Task<IEnumerable<CaseResponse>> GetAllCasesAsync()
         {
-            return await _context.Cases
-                .Include(c => c.Donor)
-                .Include(c => c.Category)
-                .Include(c => c.Supervisor)
-                .Select(c => new CaseResponse(c.Id, c.Amount, c.Description, c.Status, c.Date, c.SupervisorId, c.DonorId, c.CategoryId))
-                .ToListAsync();
+            var cases = await _caseRepo.GetAllAsync();
+            return cases.Select(c => new CaseResponse(c.Id, c.Amount, c.Description, c.Status, c.Date, c.SupervisorId, c.DonorId, c.CategoryId));
         }
 
         public async Task<PaginatedResponse<CaseResponse>> GetCasesPagedAsync(int page, int pageSize)
         {
             var (normalizedPage, normalizedPageSize) = Pagination.Normalize(page, pageSize);
-            var totalCount = await _context.Cases.CountAsync();
+            var totalCount = await _caseRepo.CountAsync();
 
-            var items = await _context.Cases
+            var cases = await _caseRepo.GetAllAsync();
+            var items = cases
                 .OrderBy(c => c.Id)
                 .Skip((normalizedPage - 1) * normalizedPageSize)
                 .Take(normalizedPageSize)
                 .Select(c => new CaseResponse(c.Id, c.Amount, c.Description, c.Status, c.Date, c.SupervisorId, c.DonorId, c.CategoryId))
-                .ToListAsync();
+                .ToList();
 
             var totalPages = Pagination.GetTotalPages(totalCount, normalizedPageSize);
             return new PaginatedResponse<CaseResponse>(items, normalizedPage, normalizedPageSize, totalCount, totalPages);
@@ -42,12 +41,7 @@ namespace DonationManagement.Api.Services
 
         public async Task<CaseResponse?> GetCaseByIdAsync(int id)
         {
-            var caseEntity = await _context.Cases
-                .Include(c => c.Donor)
-                .Include(c => c.Category)
-                .Include(c => c.Supervisor)
-                .FirstOrDefaultAsync(c => c.Id == id);
-
+            var caseEntity = await _caseRepo.GetByIdAsync(id);
             return caseEntity == null ? null :
                 new CaseResponse(caseEntity.Id, caseEntity.Amount, caseEntity.Description, caseEntity.Status, caseEntity.Date, caseEntity.SupervisorId, caseEntity.DonorId, caseEntity.CategoryId);
         }
@@ -65,15 +59,15 @@ namespace DonationManagement.Api.Services
                 CategoryId = request.CategoryId
             };
 
-            _context.Cases.Add(caseEntity);
-            await _context.SaveChangesAsync();
+            await _caseRepo.AddAsync(caseEntity);
+            await _caseRepo.SaveChangesAsync();
 
             return new CaseResponse(caseEntity.Id, caseEntity.Amount, caseEntity.Description, caseEntity.Status, caseEntity.Date, caseEntity.SupervisorId, caseEntity.DonorId, caseEntity.CategoryId);
         }
 
         public async Task<CaseResponse?> UpdateCaseAsync(int id, CaseRequest request)
         {
-            var caseEntity = await _context.Cases.FindAsync(id);
+            var caseEntity = await _caseRepo.GetByIdAsync(id);
             if (caseEntity == null) return null;
 
             caseEntity.Amount = request.Amount;
@@ -84,37 +78,35 @@ namespace DonationManagement.Api.Services
             caseEntity.DonorId = request.DonorId;
             caseEntity.CategoryId = request.CategoryId;
 
-            await _context.SaveChangesAsync();
+            _caseRepo.Update(caseEntity);
+            await _caseRepo.SaveChangesAsync();
 
             return new CaseResponse(caseEntity.Id, caseEntity.Amount, caseEntity.Description, caseEntity.Status, caseEntity.Date, caseEntity.SupervisorId, caseEntity.DonorId, caseEntity.CategoryId);
         }
 
         public async Task<bool> DeleteCaseAsync(int id)
         {
-            var caseEntity = await _context.Cases.FindAsync(id);
+            var caseEntity = await _caseRepo.GetByIdAsync(id);
             if (caseEntity == null) return false;
 
-            _context.Cases.Remove(caseEntity);
-            await _context.SaveChangesAsync();
+            _caseRepo.Remove(caseEntity);
+            await _caseRepo.SaveChangesAsync();
             return true;
         }
 
         public async Task<IEnumerable<DistributionResponse>> GetCaseDistributionsAsync(int caseId)
         {
-            return await _context.Distributions
-                .Where(d => d.CaseId == caseId)
-                .Select(d => new DistributionResponse(d.Id, d.Amount, d.DistributionDate, d.Status, d.Recipient, d.CaseId, d.HandledByEmployeeId))
-                .ToListAsync();
+            var distributions = await _distributionRepo.FindAsync(d => d.CaseId == caseId);
+            return distributions.Select(d => new DistributionResponse(d.Id, d.Amount, d.DistributionDate, d.Status, d.Recipient, d.CaseId, d.HandledByEmployeeId));
         }
 
         public async Task<decimal> GetRemainingAmountNeededAsync(int caseId)
         {
-            var caseEntity = await _context.Cases.FindAsync(caseId);
+            var caseEntity = await _caseRepo.GetByIdAsync(caseId);
             if (caseEntity == null) return 0;
 
-            var totalDistributed = await _context.Distributions
-                .Where(d => d.CaseId == caseId && d.Status == "Completed")
-                .SumAsync(d => d.Amount);
+            var distributions = await _distributionRepo.FindAsync(d => d.CaseId == caseId && d.Status == "Completed");
+            var totalDistributed = distributions.Sum(d => d.Amount);
 
             return Math.Max(0, caseEntity.Amount - totalDistributed);
         }

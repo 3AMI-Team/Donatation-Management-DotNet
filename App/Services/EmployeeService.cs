@@ -1,38 +1,51 @@
-using Microsoft.EntityFrameworkCore;
 using DonationManagement.Api.DTOs;
 using DonationManagement.Core;
 using DonationManagement.Core.Entities;
+using DonationManagement.Core.Repositories;
 using BCrypt.Net;
 
 namespace DonationManagement.Api.Services
 {
     public class EmployeeService : IEmployeeService
     {
-        private readonly DonationDbContext _context;
+        private readonly IEmployeeRepository _employeeRepo;
+        private readonly IDonorRepository _donorRepo;
+        private readonly ICategoryRepository _categoryRepo;
+        private readonly ICaseRepository _caseRepo;
+        private readonly IDistributionRepository _distributionRepo;
 
-        public EmployeeService(DonationDbContext context)
+        public EmployeeService(
+            IEmployeeRepository employeeRepo,
+            IDonorRepository donorRepo,
+            ICategoryRepository categoryRepo,
+            ICaseRepository caseRepo,
+            IDistributionRepository distributionRepo)
         {
-            _context = context;
+            _employeeRepo = employeeRepo;
+            _donorRepo = donorRepo;
+            _categoryRepo = categoryRepo;
+            _caseRepo = caseRepo;
+            _distributionRepo = distributionRepo;
         }
 
         public async Task<IEnumerable<EmployeeResponse>> GetAllEmployeesAsync()
         {
-            return await _context.Employees
-                .Select(e => new EmployeeResponse(e.Id, e.Phone, e.Address, e.Email, e.Name, e.Role, e.Username))
-                .ToListAsync();
+            var employees = await _employeeRepo.GetAllAsync();
+            return employees.Select(e => new EmployeeResponse(e.Id, e.Phone, e.Address, e.Email, e.Name, e.Role, e.Username));
         }
 
         public async Task<PaginatedResponse<EmployeeResponse>> GetEmployeesPagedAsync(int page, int pageSize)
         {
             var (normalizedPage, normalizedPageSize) = Pagination.Normalize(page, pageSize);
-            var totalCount = await _context.Employees.CountAsync();
+            var totalCount = await _employeeRepo.CountAsync();
 
-            var items = await _context.Employees
+            var employees = await _employeeRepo.GetAllAsync(); // Note: Ideally, the repo should handle paging
+            var items = employees
                 .OrderBy(e => e.Id)
                 .Skip((normalizedPage - 1) * normalizedPageSize)
                 .Take(normalizedPageSize)
                 .Select(e => new EmployeeResponse(e.Id, e.Phone, e.Address, e.Email, e.Name, e.Role, e.Username))
-                .ToListAsync();
+                .ToList();
 
             var totalPages = Pagination.GetTotalPages(totalCount, normalizedPageSize);
             return new PaginatedResponse<EmployeeResponse>(items, normalizedPage, normalizedPageSize, totalCount, totalPages);
@@ -40,7 +53,7 @@ namespace DonationManagement.Api.Services
 
         public async Task<EmployeeResponse?> GetEmployeeByIdAsync(int id)
         {
-            var employee = await _context.Employees.FindAsync(id);
+            var employee = await _employeeRepo.GetByIdAsync(id);
             return employee == null ? null :
                 new EmployeeResponse(employee.Id, employee.Phone, employee.Address, employee.Email, employee.Name, employee.Role, employee.Username);
         }
@@ -58,15 +71,15 @@ namespace DonationManagement.Api.Services
                 Username = request.Username
             };
 
-            _context.Employees.Add(employee);
-            await _context.SaveChangesAsync();
+            await _employeeRepo.AddAsync(employee);
+            await _employeeRepo.SaveChangesAsync();
 
             return new EmployeeResponse(employee.Id, employee.Phone, employee.Address, employee.Email, employee.Name, employee.Role, employee.Username);
         }
 
         public async Task<EmployeeResponse?> UpdateEmployeeAsync(int id, EmployeeRequest request)
         {
-            var employee = await _context.Employees.FindAsync(id);
+            var employee = await _employeeRepo.GetByIdAsync(id);
             if (employee == null) return null;
 
             employee.Phone = request.Phone;
@@ -77,35 +90,32 @@ namespace DonationManagement.Api.Services
             employee.Password = BCrypt.Net.BCrypt.HashPassword(request.Password);
             employee.Username = request.Username;
 
-            await _context.SaveChangesAsync();
+            _employeeRepo.Update(employee);
+            await _employeeRepo.SaveChangesAsync();
 
             return new EmployeeResponse(employee.Id, employee.Phone, employee.Address, employee.Email, employee.Name, employee.Role, employee.Username);
         }
 
         public async Task<bool> DeleteEmployeeAsync(int id)
         {
-            var employee = await _context.Employees.FindAsync(id);
+            var employee = await _employeeRepo.GetByIdAsync(id);
             if (employee == null) return false;
 
-            _context.Employees.Remove(employee);
-            await _context.SaveChangesAsync();
+            _employeeRepo.Remove(employee);
+            await _employeeRepo.SaveChangesAsync();
             return true;
         }
 
         public async Task<IEnumerable<CaseResponse>> GetRegisteredCasesAsync(int employeeId)
         {
-            return await _context.Cases
-                .Where(c => c.SupervisorId == employeeId)
-                .Select(c => new CaseResponse(c.Id, c.Amount, c.Description, c.Status, c.Date, c.SupervisorId, c.DonorId, c.CategoryId))
-                .ToListAsync();
+            var cases = await _caseRepo.FindAsync(c => c.SupervisorId == employeeId);
+            return cases.Select(c => new CaseResponse(c.Id, c.Amount, c.Description, c.Status, c.Date, c.SupervisorId, c.DonorId, c.CategoryId));
         }
 
         public async Task<IEnumerable<DistributionResponse>> GetHandledDistributionsAsync(int employeeId)
         {
-            return await _context.Distributions
-                .Where(d => d.HandledByEmployeeId == employeeId)
-                .Select(d => new DistributionResponse(d.Id, d.Amount, d.DistributionDate, d.Status, d.Recipient, d.CaseId, d.HandledByEmployeeId))
-                .ToListAsync();
+            var distributions = await _distributionRepo.FindAsync(d => d.HandledByEmployeeId == employeeId);
+            return distributions.Select(d => new DistributionResponse(d.Id, d.Amount, d.DistributionDate, d.Status, d.Recipient, d.CaseId, d.HandledByEmployeeId));
         }
 
         // Employee management functions for donors, categories, cases
@@ -119,19 +129,19 @@ namespace DonationManagement.Api.Services
                 RegisterDate = DateTime.UtcNow
             };
 
-            _context.Donors.Add(donor);
-            await _context.SaveChangesAsync();
+            await _donorRepo.AddAsync(donor);
+            await _donorRepo.SaveChangesAsync();
 
             return new DonorResponse(donor.Id, donor.Name, donor.Email, donor.Phone, donor.RegisterDate);
         }
 
         public async Task<bool> DeleteDonorAsync(int id)
         {
-            var donor = await _context.Donors.FindAsync(id);
+            var donor = await _donorRepo.GetByIdAsync(id);
             if (donor == null) return false;
 
-            _context.Donors.Remove(donor);
-            await _context.SaveChangesAsync();
+            _donorRepo.Remove(donor);
+            await _donorRepo.SaveChangesAsync();
             return true;
         }
 
@@ -143,19 +153,19 @@ namespace DonationManagement.Api.Services
                 Description = request.Description
             };
 
-            _context.Categories.Add(category);
-            await _context.SaveChangesAsync();
+            await _categoryRepo.AddAsync(category);
+            await _categoryRepo.SaveChangesAsync();
 
             return new CategoryResponse(category.Id, category.Type, category.Description);
         }
 
         public async Task<bool> DeleteCategoryAsync(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
+            var category = await _categoryRepo.GetByIdAsync(id);
             if (category == null) return false;
 
-            _context.Categories.Remove(category);
-            await _context.SaveChangesAsync();
+            _categoryRepo.Remove(category);
+            await _categoryRepo.SaveChangesAsync();
             return true;
         }
 
@@ -172,20 +182,38 @@ namespace DonationManagement.Api.Services
                 CategoryId = request.CategoryId
             };
 
-            _context.Cases.Add(caseEntity);
-            await _context.SaveChangesAsync();
+            await _caseRepo.AddAsync(caseEntity);
+            await _caseRepo.SaveChangesAsync();
 
             return new CaseResponse(caseEntity.Id, caseEntity.Amount, caseEntity.Description, caseEntity.Status, caseEntity.Date, caseEntity.SupervisorId, caseEntity.DonorId, caseEntity.CategoryId);
         }
 
         public async Task<bool> DeleteCaseAsync(int id)
         {
-            var caseEntity = await _context.Cases.FindAsync(id);
+            var caseEntity = await _caseRepo.GetByIdAsync(id);
             if (caseEntity == null) return false;
 
-            _context.Cases.Remove(caseEntity);
-            await _context.SaveChangesAsync();
+            _caseRepo.Remove(caseEntity);
+            await _caseRepo.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<AuthResponse?> LoginAsync(LoginRequest request)
+        {
+            var employees = await _employeeRepo.FindAsync(e => e.Username == request.Username);
+            var employee = employees.FirstOrDefault();
+
+            if (employee == null || !BCrypt.Net.BCrypt.Verify(request.Password, employee.Password))
+            {
+                return null;
+            }
+
+            return new AuthResponse(
+                employee.Id,
+                employee.Name,
+                employee.Username,
+                employee.Role
+            );
         }
     }
 }

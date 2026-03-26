@@ -15,6 +15,8 @@ namespace DonationManagement.Core
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             // Configure relationships
             modelBuilder.Entity<Case>()
                 .HasOne(c => c.Supervisor)
@@ -45,6 +47,15 @@ namespace DonationManagement.Core
                 .WithMany(e => e.DistributionsHandled)
                 .HasForeignKey(d => d.HandledByEmployeeId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            // Configure decimal precision
+            modelBuilder.Entity<Case>()
+                .Property(c => c.Amount)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Distribution>()
+                .Property(d => d.Amount)
+                .HasPrecision(18, 2);
         }
     }
 }

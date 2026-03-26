@@ -12,6 +12,7 @@ namespace DonationManagement.Api.Services
         Task<bool> DeleteEmployeeAsync(int id);
         Task<IEnumerable<CaseResponse>> GetRegisteredCasesAsync(int employeeId);
         Task<IEnumerable<DistributionResponse>> GetHandledDistributionsAsync(int employeeId);
+        Task<AuthResponse?> LoginAsync(LoginRequest request);
         // Employee management functions
         Task<DonorResponse> CreateDonorAsync(DonorRequest request);
         Task<bool> DeleteDonorAsync(int id);

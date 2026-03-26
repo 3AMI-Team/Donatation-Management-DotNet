@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using DonationManagement.Api.Services;
 using DonationManagement.Core;
+using DonationManagement.Core.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,14 @@ builder.Services.AddScoped<IDonorService, DonorService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICaseService, CaseService>();
 builder.Services.AddScoped<IDistributionService, DistributionService>();
+
+// Register repositories
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddScoped<IDonorRepository, DonorRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ICaseRepository, CaseRepository>();
+builder.Services.AddScoped<IDistributionRepository, DistributionRepository>();
 
 var app = builder.Build();
 
