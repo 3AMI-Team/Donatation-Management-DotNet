@@ -4,7 +4,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using DonationManagement.Api.Services.Interfaces;
 using DonationManagement.Api.Services.Implementations;
-using DonationManagement.Core;
+using DonationManagement.Core.Data;
 using DonationManagement.Core.Repositories.Interfaces;
 using DonationManagement.Core.Repositories.Implementations;
 

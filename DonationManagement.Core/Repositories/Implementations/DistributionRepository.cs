@@ -1,5 +1,6 @@
 using DonationManagement.Core.Entities;
 using DonationManagement.Core.Repositories.Interfaces;
+using DonationManagement.Core.Data;
 
 namespace DonationManagement.Core.Repositories.Implementations
 {

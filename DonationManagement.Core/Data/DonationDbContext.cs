@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using DonationManagement.Core.Entities;
 
-namespace DonationManagement.Core
+namespace DonationManagement.Core.Data
 {
     public class DonationDbContext : DbContext
     {

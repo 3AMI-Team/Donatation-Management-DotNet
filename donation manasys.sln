@@ -4,7 +4,7 @@ VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DonationManagement.Api", "DonationManagement.Api", "{F95F473B-E98A-ACD6-1986-755F447BE36F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DonationManagement.Api", "App\DonationManagement.Api.csproj", "{AD7BD9CD-D29E-3D90-3511-15971CC1D98A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DonationManagement.Api", "DonationManagement.Api\DonationManagement.Api.csproj", "{AD7BD9CD-D29E-3D90-3511-15971CC1D98A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DonationManagement.Core", "DonationManagement.Core\DonationManagement.Core.csproj", "{1E24D471-1268-4167-AA12-4A90AFFCF997}"
 EndProject
