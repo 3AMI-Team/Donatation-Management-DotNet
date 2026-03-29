@@ -7,7 +7,7 @@
   "variable": [
     {
       "key": "baseUrl",
-      "value": "https://localhost:5001",
+      "value": "http://localhost:5234",
       "type": "string"
     },
     {
@@ -70,6 +70,80 @@
                 "api",
                 "Account",
                 "login"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Donor Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if(jsonData.token) {",
+                  "    pm.collectionVariables.set(\"token\", jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"ibrahim@donor.com\",\r\n  \"password\": \"StrongPassword123\"\r\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/Account/donor-login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Account",
+                "donor-login"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Donor Signup",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Ibrahim Donor\",\r\n  \"email\": \"ibrahim@donor.com\",\r\n  \"phone\": \"01000000000\",\r\n  \"password\": \"StrongPassword123\"\r\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/Account/donor-signup",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Account",
+                "donor-signup"
               ]
             }
           }

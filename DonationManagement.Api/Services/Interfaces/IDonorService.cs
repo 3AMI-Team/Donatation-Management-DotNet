@@ -9,5 +9,7 @@ namespace DonationManagement.Api.Services.Interfaces
         Task<DonorResponse?> UpdateDonorAsync(int id, DonorRequest request);
         Task<bool> DeleteDonorAsync(int id);
         Task<IEnumerable<CaseResponse>> GetDonorCasesAsync(int donorId);
+        Task<DonorResponse> SignupAsync(DonorSignupRequest request);
+        Task<AuthResponse?> LoginAsync(DonorLoginRequest request);
     }
 }

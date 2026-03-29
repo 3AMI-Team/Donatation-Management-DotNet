@@ -9,10 +9,12 @@ namespace DonationManagement.Api.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IEmployeeService _employeeService;
+        private readonly IDonorService _donorService;
 
-        public AccountController(IEmployeeService employeeService)
+        public AccountController(IEmployeeService employeeService, IDonorService donorService)
         {
             _employeeService = employeeService;
+            _donorService = donorService;
         }
 
         [HttpPost("login")]
@@ -24,6 +26,25 @@ namespace DonationManagement.Api.Controllers
                 return Unauthorized(new { message = "Invalid username or password" });
             }
 
+            return Ok(result);
+        }
+
+        [HttpPost("donor-login")]
+        public async Task<ActionResult<AuthResponse>> DonorLogin(DonorLoginRequest request)
+        {
+            var result = await _donorService.LoginAsync(request);
+            if (result == null)
+            {
+                return Unauthorized(new { message = "Invalid email or password" });
+            }
+
+            return Ok(result);
+        }
+
+        [HttpPost("donor-signup")]
+        public async Task<ActionResult<DonorResponse>> DonorSignup(DonorSignupRequest request)
+        {
+            var result = await _donorService.SignupAsync(request);
             return Ok(result);
         }
     }

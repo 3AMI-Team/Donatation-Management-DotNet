@@ -12,11 +12,13 @@ namespace DonationManagement.Api.Services.Implementations
     {
         private readonly IDonorRepository _donorRepo;
         private readonly ICaseRepository _caseRepo;
+        private readonly IJwtTokenService _jwtTokenService;
 
-        public DonorService(IDonorRepository donorRepo, ICaseRepository caseRepo)
+        public DonorService(IDonorRepository donorRepo, ICaseRepository caseRepo, IJwtTokenService jwtTokenService)
         {
             _donorRepo = donorRepo;
             _caseRepo = caseRepo;
+            _jwtTokenService = jwtTokenService;
         }
 
         public async Task<IEnumerable<DonorResponse>> GetAllDonorsAsync()
@@ -88,6 +90,38 @@ namespace DonationManagement.Api.Services.Implementations
         {
             var cases = await _caseRepo.FindAsync(c => c.DonorId == donorId);
             return cases.Select(c => c.ToResponse());
+        }
+
+        public async Task<DonorResponse> SignupAsync(DonorSignupRequest request)
+        {
+            var donor = new Donor
+            {
+                Name = request.Name,
+                Email = request.Email,
+                Phone = request.Phone,
+                Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
+                RegisterDate = DateTime.UtcNow
+            };
+
+            await _donorRepo.AddAsync(donor);
+            await _donorRepo.SaveChangesAsync();
+
+            return donor.ToResponse();
+        }
+
+        public async Task<AuthResponse?> LoginAsync(DonorLoginRequest request)
+        {
+            var donors = await _donorRepo.FindAsync(d => d.Email == request.Email);
+            var donor = donors.FirstOrDefault();
+
+            if (donor == null || string.IsNullOrEmpty(donor.Password)) return null;
+
+            if (!BCrypt.Net.BCrypt.Verify(request.Password, donor.Password))
+                return null;
+
+            var token = _jwtTokenService.GenerateToken(donor.Email, "Donor");
+
+            return new AuthResponse(donor.Id, donor.Name, donor.Email, "Donor", token);
         }
     }
 }
