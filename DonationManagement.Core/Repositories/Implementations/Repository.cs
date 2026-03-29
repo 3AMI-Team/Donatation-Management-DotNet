@@ -1,5 +1,6 @@
 using DonationManagement.Core.Repositories.Interfaces;
 using DonationManagement.Core.Data;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
