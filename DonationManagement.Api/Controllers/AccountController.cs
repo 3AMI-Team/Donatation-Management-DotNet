@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using DonationManagement.Api.DTOs;
 using DonationManagement.Api.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace DonationManagement.Api.Controllers
 {
@@ -46,6 +47,21 @@ namespace DonationManagement.Api.Controllers
         {
             var result = await _donorService.SignupAsync(request);
             return Ok(result);
+        }
+
+        [HttpGet("diag")]
+        public ActionResult GetDiag([FromServices] DonationManagement.Core.Data.DonationDbContext context)
+        {
+            try
+            {
+                context.Database.CanConnect();
+                var pending = context.Database.GetPendingMigrations();
+                return Ok(new { success = true, canConnect = true, pendingMigrations = pending });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new { success = false, error = ex.ToString() });
+            }
         }
     }
 }

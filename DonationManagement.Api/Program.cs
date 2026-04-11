@@ -7,8 +7,17 @@ using DonationManagement.Api.Services.Implementations;
 using DonationManagement.Core.Data;
 using DonationManagement.Core.Repositories.Interfaces;
 using DonationManagement.Core.Repositories.Implementations;
+using Microsoft.EntityFrameworkCore;
+
+// Load .env file
+try
+{
+    DotNetEnv.Env.Load();
+}
+catch (Exception) { /* Optional: ignore if .env not found */ }
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddEnvironmentVariables();
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -94,10 +103,27 @@ builder.Services.AddScoped<IDistributionRepository, DistributionRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+app.UseDeveloperExceptionPage();
+
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Donation Management API v1"));
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<DonationDbContext>();
+        context.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while migrating the database.");
+    }
 }
 
 app.UseHttpsRedirection();
