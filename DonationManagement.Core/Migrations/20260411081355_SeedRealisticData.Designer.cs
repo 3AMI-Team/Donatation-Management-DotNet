@@ -4,6 +4,7 @@ using DonationManagement.Core.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DonationManagement.Core.Migrations
 {
     [DbContext(typeof(DonationDbContext))]
-    partial class DonationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260411081355_SeedRealisticData")]
+    partial class SeedRealisticData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,7 +74,7 @@ namespace DonationManagement.Core.Migrations
                             Amount = 3000m,
                             CategoryId = 101,
                             Date = new DateTime(2026, 1, 15, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Sponsorship for a struggling university student",
+                            Description = "مساعدة طالب جامعي متعثر في مصاريف الكلية",
                             DonorId = 101,
                             Status = "Open",
                             SupervisorId = 1
@@ -82,7 +85,7 @@ namespace DonationManagement.Core.Migrations
                             Amount = 15000m,
                             CategoryId = 102,
                             Date = new DateTime(2026, 1, 20, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Heart surgery for an elderly patient",
+                            Description = "عملية قسطرة قلب لمريض مسن",
                             DonorId = 102,
                             Status = "In Progress",
                             SupervisorId = 1
@@ -93,7 +96,7 @@ namespace DonationManagement.Core.Migrations
                             Amount = 500m,
                             CategoryId = 103,
                             Date = new DateTime(2026, 1, 25, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Monthly food basket for a family in need",
+                            Description = "شنطة غذاء لأسرة فقيرة",
                             DonorId = 103,
                             Status = "Closed",
                             SupervisorId = 1
@@ -104,7 +107,7 @@ namespace DonationManagement.Core.Migrations
                             Amount = 7000m,
                             CategoryId = 104,
                             Date = new DateTime(2026, 2, 2, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Installing a clean water well in a rural village",
+                            Description = "توصيل مياه شرب لقرية نائية",
                             DonorId = 104,
                             Status = "Open",
                             SupervisorId = 1
@@ -112,10 +115,10 @@ namespace DonationManagement.Core.Migrations
                         new
                         {
                             Id = 105,
-                            Amount = 1200m,
-                            CategoryId = 103,
+                            Amount = 12000m,
+                            CategoryId = 105,
                             Date = new DateTime(2026, 2, 5, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Winter clothing drive for orphanages",
+                            Description = "جهاز كهربائي لتجهيز عروسة يتيمة",
                             DonorId = 105,
                             Status = "Open",
                             SupervisorId = 1
@@ -126,7 +129,7 @@ namespace DonationManagement.Core.Migrations
                             Amount = 2500m,
                             CategoryId = 102,
                             Date = new DateTime(2026, 2, 10, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Monthly insulin medication for diabetic patients",
+                            Description = "أدوية شهرية لمريض سكري",
                             DonorId = 106,
                             Status = "In Progress",
                             SupervisorId = 1
@@ -137,7 +140,7 @@ namespace DonationManagement.Core.Migrations
                             Amount = 1500m,
                             CategoryId = 101,
                             Date = new DateTime(2026, 2, 18, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "School uniforms and backpacks for 50 kids",
+                            Description = "حقائب مدرسية وعمل أنشطة لأطفال أيتام",
                             DonorId = 107,
                             Status = "Closed",
                             SupervisorId = 1
@@ -145,10 +148,10 @@ namespace DonationManagement.Core.Migrations
                         new
                         {
                             Id = 108,
-                            Amount = 4000m,
+                            Amount = 40000m,
                             CategoryId = 104,
                             Date = new DateTime(2026, 3, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Repairing the roof of a collapsed house",
+                            Description = "بناء سقف منزل آيل للسقوط",
                             DonorId = 108,
                             Status = "Open",
                             SupervisorId = 1
@@ -159,7 +162,7 @@ namespace DonationManagement.Core.Migrations
                             Amount = 800m,
                             CategoryId = 103,
                             Date = new DateTime(2026, 3, 4, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Emergency food supply for a refugee family",
+                            Description = "دعم غذائي لأسرة من 5 أفراد",
                             DonorId = 109,
                             Status = "Closed",
                             SupervisorId = 1
@@ -168,9 +171,9 @@ namespace DonationManagement.Core.Migrations
                         {
                             Id = 110,
                             Amount = 6000m,
-                            CategoryId = 104,
+                            CategoryId = 105,
                             Date = new DateTime(2026, 3, 12, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Furniture and basics for a newly built shelter",
+                            Description = "مساعدة عروسين في تأسيس المنزل",
                             DonorId = 110,
                             Status = "In Progress",
                             SupervisorId = 1
@@ -179,9 +182,9 @@ namespace DonationManagement.Core.Migrations
                         {
                             Id = 111,
                             Amount = 3500m,
-                            CategoryId = 101,
+                            CategoryId = 103,
                             Date = new DateTime(2026, 3, 15, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Laptops for high-achieving low-income students",
+                            Description = "ملابس شتوية للأسر المتعففة",
                             DonorId = 101,
                             Status = "Open",
                             SupervisorId = 1
@@ -192,7 +195,7 @@ namespace DonationManagement.Core.Migrations
                             Amount = 20000m,
                             CategoryId = 102,
                             Date = new DateTime(2026, 3, 22, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Urgent diagnostic center for specialized tests",
+                            Description = "عملية شفط سوائل على المخ للطفلة خديجة",
                             DonorId = 102,
                             Status = "Open",
                             SupervisorId = 1
@@ -201,9 +204,9 @@ namespace DonationManagement.Core.Migrations
                         {
                             Id = 113,
                             Amount = 4500m,
-                            CategoryId = 105,
+                            CategoryId = 104,
                             Date = new DateTime(2026, 3, 28, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Clearing debts for single mothers",
+                            Description = "سداد دين عن غارمين",
                             DonorId = 103,
                             Status = "In Progress",
                             SupervisorId = 1
@@ -214,7 +217,7 @@ namespace DonationManagement.Core.Migrations
                             Amount = 1800m,
                             CategoryId = 101,
                             Date = new DateTime(2026, 4, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Online course subscriptions for skill dev",
+                            Description = "دعم مصروفات مدارس لأسرة أيتام",
                             DonorId = 104,
                             Status = "Open",
                             SupervisorId = 1
@@ -223,9 +226,9 @@ namespace DonationManagement.Core.Migrations
                         {
                             Id = 115,
                             Amount = 9000m,
-                            CategoryId = 104,
+                            CategoryId = 105,
                             Date = new DateTime(2026, 4, 3, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Solar panel installation for a community center",
+                            Description = "شراء ثلاجة وغسالة لعروسة",
                             DonorId = 105,
                             Status = "Open",
                             SupervisorId = 1
@@ -236,7 +239,7 @@ namespace DonationManagement.Core.Migrations
                             Amount = 1200m,
                             CategoryId = 102,
                             Date = new DateTime(2026, 4, 5, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Wheelchairs for disabled athletes",
+                            Description = "تبرع لبنك الدم القومي",
                             DonorId = 106,
                             Status = "Closed",
                             SupervisorId = 1
@@ -244,10 +247,10 @@ namespace DonationManagement.Core.Migrations
                         new
                         {
                             Id = 117,
-                            Amount = 5000m,
-                            CategoryId = 101,
+                            Amount = 50000m,
+                            CategoryId = 104,
                             Date = new DateTime(2026, 4, 7, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Restoration of a local library",
+                            Description = "ترميم دار إيواء للأطفال الرضع",
                             DonorId = 107,
                             Status = "In Progress",
                             SupervisorId = 1
@@ -258,7 +261,7 @@ namespace DonationManagement.Core.Migrations
                             Amount = 2500m,
                             CategoryId = 103,
                             Date = new DateTime(2026, 4, 9, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Nutrition kits for pregnant women",
+                            Description = "وجبات إفطار صائم متكاملة",
                             DonorId = 108,
                             Status = "Closed",
                             SupervisorId = 1
@@ -267,9 +270,9 @@ namespace DonationManagement.Core.Migrations
                         {
                             Id = 119,
                             Amount = 4200m,
-                            CategoryId = 105,
+                            CategoryId = 101,
                             Date = new DateTime(2026, 4, 10, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Vocational training for unemployed youth",
+                            Description = "أدوات ميكانيكا لشاب ليبدأ مشروع مستقل",
                             DonorId = 109,
                             Status = "Open",
                             SupervisorId = 1
@@ -280,7 +283,7 @@ namespace DonationManagement.Core.Migrations
                             Amount = 8000m,
                             CategoryId = 102,
                             Date = new DateTime(2026, 4, 11, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Rehabilitation center for post-surgery recovery",
+                            Description = "علاج كيمائي لمرضى الحروق",
                             DonorId = 110,
                             Status = "Open",
                             SupervisorId = 1
@@ -311,32 +314,32 @@ namespace DonationManagement.Core.Migrations
                         new
                         {
                             Id = 101,
-                            Description = "Student sponsorship and school supplies",
-                            Type = "Education"
+                            Description = "كفالة طلاب ومستلزمات دراسية",
+                            Type = "تعليم"
                         },
                         new
                         {
                             Id = 102,
-                            Description = "Medications, surgeries, and medical equipment",
-                            Type = "Healthcare"
+                            Description = "أدوية وعمليات جراحية",
+                            Type = "صحة"
                         },
                         new
                         {
                             Id = 103,
-                            Description = "Food packages and meal distributions",
-                            Type = "Food Security"
+                            Description = "مواد غذائية ووجبات إطعام",
+                            Type = "غذاء"
                         },
                         new
                         {
                             Id = 104,
-                            Description = "Home renovation and clean water access",
-                            Type = "Housing"
+                            Description = "بناء بيوت وتوصيل مياه",
+                            Type = "إعمار"
                         },
                         new
                         {
                             Id = 105,
-                            Description = "Disaster response and urgent assistance",
-                            Type = "Emergency Relief"
+                            Description = "مساعدة الشباب غير القادرين",
+                            Type = "تجهيز عرائس"
                         });
                 });
 
@@ -376,58 +379,6 @@ namespace DonationManagement.Core.Migrations
                     b.HasIndex("HandledByEmployeeId");
 
                     b.ToTable("Distributions");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 101,
-                            Amount = 500m,
-                            CaseId = 103,
-                            DistributionDate = new DateTime(2026, 1, 26, 0, 0, 0, 0, DateTimeKind.Utc),
-                            HandledByEmployeeId = 1,
-                            Recipient = "Sarah Jenkins",
-                            Status = "Completed"
-                        },
-                        new
-                        {
-                            Id = 102,
-                            Amount = 1500m,
-                            CaseId = 107,
-                            DistributionDate = new DateTime(2026, 2, 19, 0, 0, 0, 0, DateTimeKind.Utc),
-                            HandledByEmployeeId = 1,
-                            Recipient = "City General Hospital",
-                            Status = "Completed"
-                        },
-                        new
-                        {
-                            Id = 103,
-                            Amount = 800m,
-                            CaseId = 109,
-                            DistributionDate = new DateTime(2026, 3, 5, 0, 0, 0, 0, DateTimeKind.Utc),
-                            HandledByEmployeeId = 1,
-                            Recipient = "Local Refugee Center",
-                            Status = "Completed"
-                        },
-                        new
-                        {
-                            Id = 104,
-                            Amount = 5000m,
-                            CaseId = 102,
-                            DistributionDate = new DateTime(2026, 1, 22, 0, 0, 0, 0, DateTimeKind.Utc),
-                            HandledByEmployeeId = 1,
-                            Recipient = "Health Services Dept",
-                            Status = "Processing"
-                        },
-                        new
-                        {
-                            Id = 105,
-                            Amount = 2000m,
-                            CaseId = 106,
-                            DistributionDate = new DateTime(2026, 2, 12, 0, 0, 0, 0, DateTimeKind.Utc),
-                            HandledByEmployeeId = 1,
-                            Recipient = "Diabetic Care Clinic",
-                            Status = "Completed"
-                        });
                 });
 
             modelBuilder.Entity("DonationManagement.Core.Entities.Donor", b =>
@@ -465,91 +416,91 @@ namespace DonationManagement.Core.Migrations
                         new
                         {
                             Id = 101,
-                            Email = "james.w@example.com",
-                            Name = "James Wilson",
+                            Email = "ahmed.a@example.com",
+                            Name = "أحمد عبدالله",
                             Password = "$2a$11$/u2qj94UTkAB2m91.SYmX.WR6ShENYTBx2SK5SAKhr3RLq2Ux603W",
-                            Phone = "+12025550101",
+                            Phone = "01011112222",
                             RegisterDate = new DateTime(2025, 1, 10, 10, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 102,
-                            Email = "mary.j@example.com",
-                            Name = "Mary Johnson",
+                            Email = "sara.g@example.com",
+                            Name = "سارة جمال",
                             Password = "$2a$11$/u2qj94UTkAB2m91.SYmX.WR6ShENYTBx2SK5SAKhr3RLq2Ux603W",
-                            Phone = "+12025550102",
+                            Phone = "01122223333",
                             RegisterDate = new DateTime(2025, 2, 5, 12, 30, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 103,
-                            Email = "robert.s@example.com",
-                            Name = "Robert Smith",
+                            Email = "mahmoud.h@example.com",
+                            Name = "محمود حسن",
                             Password = "$2a$11$/u2qj94UTkAB2m91.SYmX.WR6ShENYTBx2SK5SAKhr3RLq2Ux603W",
-                            Phone = "+12025550103",
+                            Phone = "01233334444",
                             RegisterDate = new DateTime(2025, 3, 12, 9, 15, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 104,
-                            Email = "patricia.b@example.com",
-                            Name = "Patricia Brown",
+                            Email = "nourhan.t@example.com",
+                            Name = "نورهان طارق",
                             Password = "$2a$11$/u2qj94UTkAB2m91.SYmX.WR6ShENYTBx2SK5SAKhr3RLq2Ux603W",
-                            Phone = "+12025550104",
+                            Phone = "01544445555",
                             RegisterDate = new DateTime(2025, 4, 18, 14, 45, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 105,
-                            Email = "michael.d@example.com",
-                            Name = "Michael Davis",
+                            Email = "khaled.s@example.com",
+                            Name = "خالد سعيد",
                             Password = "$2a$11$/u2qj94UTkAB2m91.SYmX.WR6ShENYTBx2SK5SAKhr3RLq2Ux603W",
-                            Phone = "+12025550105",
+                            Phone = "01055556666",
                             RegisterDate = new DateTime(2025, 5, 20, 16, 20, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 106,
-                            Email = "linda.m@example.com",
-                            Name = "Linda Miller",
+                            Email = "yasmeen.k@example.com",
+                            Name = "ياسمين كمال",
                             Password = "$2a$11$/u2qj94UTkAB2m91.SYmX.WR6ShENYTBx2SK5SAKhr3RLq2Ux603W",
-                            Phone = "+12025550106",
+                            Phone = "01166667777",
                             RegisterDate = new DateTime(2025, 6, 22, 11, 10, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 107,
-                            Email = "david.t@example.com",
-                            Name = "David Taylor",
+                            Email = "mostafa.f@example.com",
+                            Name = "مصطفى فهمي",
                             Password = "$2a$11$/u2qj94UTkAB2m91.SYmX.WR6ShENYTBx2SK5SAKhr3RLq2Ux603W",
-                            Phone = "+12025550107",
+                            Phone = "01277778888",
                             RegisterDate = new DateTime(2025, 7, 30, 8, 50, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 108,
-                            Email = "elizabeth.a@example.com",
-                            Name = "Elizabeth Anderson",
+                            Email = "raghda.s@example.com",
+                            Name = "رغدة سمير",
                             Password = "$2a$11$/u2qj94UTkAB2m91.SYmX.WR6ShENYTBx2SK5SAKhr3RLq2Ux603W",
-                            Phone = "+12025550108",
+                            Phone = "01588889999",
                             RegisterDate = new DateTime(2025, 8, 14, 13, 25, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 109,
-                            Email = "richard.t@example.com",
-                            Name = "Richard Thomas",
+                            Email = "omar.f@example.com",
+                            Name = "عمر فاروق",
                             Password = "$2a$11$/u2qj94UTkAB2m91.SYmX.WR6ShENYTBx2SK5SAKhr3RLq2Ux603W",
-                            Phone = "+12025550109",
+                            Phone = "01099990000",
                             RegisterDate = new DateTime(2025, 9, 5, 15, 55, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             Id = 110,
-                            Email = "barbara.j@example.com",
-                            Name = "Barbara Jackson",
+                            Email = "laila.a@example.com",
+                            Name = "ليلى عبد الرحمن",
                             Password = "$2a$11$/u2qj94UTkAB2m91.SYmX.WR6ShENYTBx2SK5SAKhr3RLq2Ux603W",
-                            Phone = "+12025550110",
+                            Phone = "01100001111",
                             RegisterDate = new DateTime(2025, 10, 1, 10, 5, 0, 0, DateTimeKind.Utc)
                         });
                 });
@@ -598,35 +549,13 @@ namespace DonationManagement.Core.Migrations
                         new
                         {
                             Id = 1,
-                            Address = "Ismailia, Egypt",
+                            Address = "Ismailia , Egypt",
                             Email = "12baraka34@gmail.com",
                             Name = "Ibrahim Nasser",
                             Password = "$2a$11$/u2qj94UTkAB2m91.SYmX.WR6ShENYTBx2SK5SAKhr3RLq2Ux603W",
                             Phone = "01278988474",
                             Role = "Admin",
                             Username = "Ibrahim"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Address = "New York, USA",
-                            Email = "sarah.c@example.com",
-                            Name = "Sarah Connor",
-                            Password = "$2a$11$/u2qj94UTkAB2m91.SYmX.WR6ShENYTBx2SK5SAKhr3RLq2Ux603W",
-                            Phone = "+12025550199",
-                            Role = "Supervisor",
-                            Username = "SarahC"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Address = "London, UK",
-                            Email = "john.doe@example.com",
-                            Name = "John Doe",
-                            Password = "$2a$11$/u2qj94UTkAB2m91.SYmX.WR6ShENYTBx2SK5SAKhr3RLq2Ux603W",
-                            Phone = "+12025550188",
-                            Role = "FieldWorker",
-                            Username = "JohnD"
                         });
                 });
 

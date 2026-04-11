@@ -59,7 +59,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"username\": \"admin\",\r\n  \"password\": \"password123\"\r\n}"
+              "raw": "{\r\n  \"username\": \"Ibrahim\",\r\n  \"password\": \"12345678\"\r\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/Account/login",
@@ -567,7 +567,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"amount\": 500,\r\n  \"date\": \"2026-03-29T00:00:00Z\",\r\n  \"status\": \"Completed\",\r\n  \"receiptImage\": \"http://example.com/receipt.jpg\",\r\n  \"caseId\": 1,\r\n  \"handledByEmployeeId\": 1\r\n}"
+              "raw": "{\n  \"amount\": 500,\n  \"distributionDate\": \"2026-03-29T00:00:00Z\",\n  \"status\": \"Completed\",\n  \"recipient\": \"John Recipient\",\n  \"caseId\": 1,\n  \"handledByEmployeeId\": 1\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/Distributions",
@@ -593,7 +593,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"amount\": 600,\r\n  \"date\": \"2026-03-29T00:00:00Z\",\r\n  \"status\": \"Completed\",\r\n  \"receiptImage\": \"http://example.com/receipt_updated.jpg\",\r\n  \"caseId\": 1,\r\n  \"handledByEmployeeId\": 1\r\n}"
+              "raw": "{\n  \"amount\": 600,\n  \"distributionDate\": \"2026-03-29T00:00:00Z\",\n  \"status\": \"Completed\",\n  \"recipient\": \"John Recipient Updated\",\n  \"caseId\": 1,\n  \"handledByEmployeeId\": 1\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/Distributions/1",
@@ -655,7 +655,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"totalAmount\": 1000,\r\n  \"caseIds\": [1, 2],\r\n  \"date\": \"2026-03-29T00:00:00Z\",\r\n  \"employeeId\": 1\r\n}"
+              "raw": "{\r\n  \"totalAmount\": 1000,\r\n  \"autoDistribute\": true\r\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/Distributions/even",
