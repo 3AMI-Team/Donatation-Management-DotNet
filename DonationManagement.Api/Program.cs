@@ -91,6 +91,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICaseService, CaseService>();
 builder.Services.AddScoped<IDistributionService, DistributionService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 // Register repositories
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));

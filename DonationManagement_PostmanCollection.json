@@ -151,6 +151,95 @@
       ]
     },
     {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Full Dashboard Data",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/Dashboard",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Dashboard"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get KPIs",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/Dashboard/kpis",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Dashboard",
+                "kpis"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Last Donations",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/Dashboard/lastDonations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Dashboard",
+                "lastDonations"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Last Distributions",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/Dashboard/lastDistributions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Dashboard",
+                "lastDistributions"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Donation Trends",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/Dashboard/donationTrends",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Dashboard",
+                "donationTrends"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "Cases",
       "item": [
         {

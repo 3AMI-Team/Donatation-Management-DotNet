@@ -117,7 +117,9 @@ namespace DonationManagement.Core.Data
                 new Donor { Id = 107, Name = "David Taylor", Email = "david.t@example.com", Password = sharedPasswordHash, Phone = "+12025550107", RegisterDate = new DateTime(2025, 7, 30, 8, 50, 0, DateTimeKind.Utc) },
                 new Donor { Id = 108, Name = "Elizabeth Anderson", Email = "elizabeth.a@example.com", Password = sharedPasswordHash, Phone = "+12025550108", RegisterDate = new DateTime(2025, 8, 14, 13, 25, 0, DateTimeKind.Utc) },
                 new Donor { Id = 109, Name = "Richard Thomas", Email = "richard.t@example.com", Password = sharedPasswordHash, Phone = "+12025550109", RegisterDate = new DateTime(2025, 9, 5, 15, 55, 0, DateTimeKind.Utc) },
-                new Donor { Id = 110, Name = "Barbara Jackson", Email = "barbara.j@example.com", Password = sharedPasswordHash, Phone = "+12025550110", RegisterDate = new DateTime(2025, 10, 1, 10, 5, 0, DateTimeKind.Utc) }
+                new Donor { Id = 110, Name = "Barbara Jackson", Email = "barbara.j@example.com", Password = sharedPasswordHash, Phone = "+12025550110", RegisterDate = new DateTime(2025, 10, 1, 10, 5, 0, DateTimeKind.Utc) },
+                new Donor { Id = 111, Name = "William White", Email = "william.w@example.com", Password = sharedPasswordHash, Phone = "+12025550111", RegisterDate = new DateTime(2026, 4, 12, 10, 0, 0, DateTimeKind.Utc) },
+                new Donor { Id = 112, Name = "Susan Green", Email = "susan.g@example.com", Password = sharedPasswordHash, Phone = "+12025550112", RegisterDate = new DateTime(2026, 4, 13, 08, 0, 0, DateTimeKind.Utc) }
             );
 
             // Seed Cases
@@ -141,7 +143,10 @@ namespace DonationManagement.Core.Data
                 new Case { Id = 117, Amount = 5000, Description = "Restoration of a local library", Status = "In Progress", Date = new DateTime(2026, 4, 7, 0, 0, 0, DateTimeKind.Utc), DonorId = 107, CategoryId = 101, SupervisorId = 1 },
                 new Case { Id = 118, Amount = 2500, Description = "Nutrition kits for pregnant women", Status = "Closed", Date = new DateTime(2026, 4, 9, 0, 0, 0, DateTimeKind.Utc), DonorId = 108, CategoryId = 103, SupervisorId = 1 },
                 new Case { Id = 119, Amount = 4200, Description = "Vocational training for unemployed youth", Status = "Open", Date = new DateTime(2026, 4, 10, 0, 0, 0, DateTimeKind.Utc), DonorId = 109, CategoryId = 105, SupervisorId = 1 },
-                new Case { Id = 120, Amount = 8000, Description = "Rehabilitation center for post-surgery recovery", Status = "Open", Date = new DateTime(2026, 4, 11, 0, 0, 0, DateTimeKind.Utc), DonorId = 110, CategoryId = 102, SupervisorId = 1 }
+                new Case { Id = 120, Amount = 8000, Description = "Rehabilitation center for post-surgery recovery", Status = "Open", Date = new DateTime(2026, 4, 11, 0, 0, 0, DateTimeKind.Utc), DonorId = 110, CategoryId = 102, SupervisorId = 1 },
+                new Case { Id = 121, Amount = 5500, Description = "Clean Water for primary school", Status = "Open", Date = new DateTime(2026, 4, 12, 10, 30, 0, DateTimeKind.Utc), DonorId = 111, CategoryId = 104, SupervisorId = 1 },
+                new Case { Id = 122, Amount = 2500, Description = "Daily Bread for Homeless", Status = "Open", Date = new DateTime(2026, 4, 13, 09, 15, 0, DateTimeKind.Utc), DonorId = 112, CategoryId = 103, SupervisorId = 1 },
+                new Case { Id = 123, Amount = 3000, Description = "Medical kits for rural area", Status = "Open", Date = new DateTime(2026, 4, 13, 10, 00, 0, DateTimeKind.Utc), DonorId = 101, CategoryId = 102, SupervisorId = 1 }
             );
 
             // Seed Distributions
@@ -150,7 +155,9 @@ namespace DonationManagement.Core.Data
                 new Distribution { Id = 102, Amount = 1500, DistributionDate = new DateTime(2026, 2, 19, 0, 0, 0, DateTimeKind.Utc), Status = "Completed", Recipient = "City General Hospital", CaseId = 107, HandledByEmployeeId = 1 },
                 new Distribution { Id = 103, Amount = 800, DistributionDate = new DateTime(2026, 3, 5, 0, 0, 0, DateTimeKind.Utc), Status = "Completed", Recipient = "Local Refugee Center", CaseId = 109, HandledByEmployeeId = 1 },
                 new Distribution { Id = 104, Amount = 5000, DistributionDate = new DateTime(2026, 1, 22, 0, 0, 0, DateTimeKind.Utc), Status = "Processing", Recipient = "Health Services Dept", CaseId = 102, HandledByEmployeeId = 1 },
-                new Distribution { Id = 105, Amount = 2000, DistributionDate = new DateTime(2026, 2, 12, 0, 0, 0, DateTimeKind.Utc), Status = "Completed", Recipient = "Diabetic Care Clinic", CaseId = 106, HandledByEmployeeId = 1 }
+                new Distribution { Id = 105, Amount = 2000, DistributionDate = new DateTime(2026, 2, 12, 0, 0, 0, DateTimeKind.Utc), Status = "Completed", Recipient = "Diabetic Care Clinic", CaseId = 106, HandledByEmployeeId = 1 },
+                new Distribution { Id = 106, Amount = 1200, DistributionDate = new DateTime(2026, 4, 12, 11, 0, 0, DateTimeKind.Utc), Status = "Completed", Recipient = "Alexandria School", CaseId = 121, HandledByEmployeeId = 1 },
+                new Distribution { Id = 107, Amount = 2000, DistributionDate = new DateTime(2026, 4, 13, 09, 30, 0, DateTimeKind.Utc), Status = "Completed", Recipient = "Public Shelter", CaseId = 122, HandledByEmployeeId = 1 }
             );
         }
     }
