@@ -30,22 +30,27 @@ namespace DonationManagement.Core.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("Amount")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("DonorId")
-                        .HasColumnType("int");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("RegistDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -58,8 +63,6 @@ namespace DonationManagement.Core.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("DonorId");
-
                     b.HasIndex("SupervisorId");
 
                     b.ToTable("Cases");
@@ -67,256 +70,39 @@ namespace DonationManagement.Core.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 101,
-                            Amount = 3000m,
-                            CategoryId = 101,
-                            Date = new DateTime(2026, 1, 15, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Sponsorship for a struggling university student",
-                            DonorId = 101,
-                            Status = "Open",
-                            SupervisorId = 1
-                        },
-                        new
-                        {
-                            Id = 102,
-                            Amount = 15000m,
+                            Id = 201,
+                            Address = "Detroit, USA",
                             CategoryId = 102,
-                            Date = new DateTime(2026, 1, 20, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Heart surgery for an elderly patient",
-                            DonorId = 102,
-                            Status = "In Progress",
-                            SupervisorId = 1
+                            Description = "Needs a new wheelchair for educational mobility",
+                            Name = "Alice Peterson",
+                            Phone = "+12025550501",
+                            RegistDate = new DateTime(2026, 1, 5, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Status = "Approved",
+                            SupervisorId = 2
                         },
                         new
                         {
-                            Id = 103,
-                            Amount = 500m,
+                            Id = 202,
+                            Address = "Houston, USA",
                             CategoryId = 103,
-                            Date = new DateTime(2026, 1, 25, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Monthly food basket for a family in need",
-                            DonorId = 103,
-                            Status = "Closed",
-                            SupervisorId = 1
+                            Description = "Monthly food support for a family of 6",
+                            Name = "Robert's Family",
+                            Phone = "+12025550502",
+                            RegistDate = new DateTime(2026, 1, 15, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Status = "Pending Review",
+                            SupervisorId = 2
                         },
                         new
                         {
-                            Id = 104,
-                            Amount = 7000m,
+                            Id = 203,
+                            Address = "Nairobi, Kenya",
                             CategoryId = 104,
-                            Date = new DateTime(2026, 2, 2, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Installing a clean water well in a rural village",
-                            DonorId = 104,
-                            Status = "Open",
-                            SupervisorId = 1
-                        },
-                        new
-                        {
-                            Id = 105,
-                            Amount = 1200m,
-                            CategoryId = 103,
-                            Date = new DateTime(2026, 2, 5, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Winter clothing drive for orphanages",
-                            DonorId = 105,
-                            Status = "Open",
-                            SupervisorId = 1
-                        },
-                        new
-                        {
-                            Id = 106,
-                            Amount = 2500m,
-                            CategoryId = 102,
-                            Date = new DateTime(2026, 2, 10, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Monthly insulin medication for diabetic patients",
-                            DonorId = 106,
-                            Status = "In Progress",
-                            SupervisorId = 1
-                        },
-                        new
-                        {
-                            Id = 107,
-                            Amount = 1500m,
-                            CategoryId = 101,
-                            Date = new DateTime(2026, 2, 18, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "School uniforms and backpacks for 50 kids",
-                            DonorId = 107,
-                            Status = "Closed",
-                            SupervisorId = 1
-                        },
-                        new
-                        {
-                            Id = 108,
-                            Amount = 4000m,
-                            CategoryId = 104,
-                            Date = new DateTime(2026, 3, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Repairing the roof of a collapsed house",
-                            DonorId = 108,
-                            Status = "Open",
-                            SupervisorId = 1
-                        },
-                        new
-                        {
-                            Id = 109,
-                            Amount = 800m,
-                            CategoryId = 103,
-                            Date = new DateTime(2026, 3, 4, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Emergency food supply for a refugee family",
-                            DonorId = 109,
-                            Status = "Closed",
-                            SupervisorId = 1
-                        },
-                        new
-                        {
-                            Id = 110,
-                            Amount = 6000m,
-                            CategoryId = 104,
-                            Date = new DateTime(2026, 3, 12, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Furniture and basics for a newly built shelter",
-                            DonorId = 110,
-                            Status = "In Progress",
-                            SupervisorId = 1
-                        },
-                        new
-                        {
-                            Id = 111,
-                            Amount = 3500m,
-                            CategoryId = 101,
-                            Date = new DateTime(2026, 3, 15, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Laptops for high-achieving low-income students",
-                            DonorId = 101,
-                            Status = "Open",
-                            SupervisorId = 1
-                        },
-                        new
-                        {
-                            Id = 112,
-                            Amount = 20000m,
-                            CategoryId = 102,
-                            Date = new DateTime(2026, 3, 22, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Urgent diagnostic center for specialized tests",
-                            DonorId = 102,
-                            Status = "Open",
-                            SupervisorId = 1
-                        },
-                        new
-                        {
-                            Id = 113,
-                            Amount = 4500m,
-                            CategoryId = 105,
-                            Date = new DateTime(2026, 3, 28, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Clearing debts for single mothers",
-                            DonorId = 103,
-                            Status = "In Progress",
-                            SupervisorId = 1
-                        },
-                        new
-                        {
-                            Id = 114,
-                            Amount = 1800m,
-                            CategoryId = 101,
-                            Date = new DateTime(2026, 4, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Online course subscriptions for skill dev",
-                            DonorId = 104,
-                            Status = "Open",
-                            SupervisorId = 1
-                        },
-                        new
-                        {
-                            Id = 115,
-                            Amount = 9000m,
-                            CategoryId = 104,
-                            Date = new DateTime(2026, 4, 3, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Solar panel installation for a community center",
-                            DonorId = 105,
-                            Status = "Open",
-                            SupervisorId = 1
-                        },
-                        new
-                        {
-                            Id = 116,
-                            Amount = 1200m,
-                            CategoryId = 102,
-                            Date = new DateTime(2026, 4, 5, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Wheelchairs for disabled athletes",
-                            DonorId = 106,
-                            Status = "Closed",
-                            SupervisorId = 1
-                        },
-                        new
-                        {
-                            Id = 117,
-                            Amount = 5000m,
-                            CategoryId = 101,
-                            Date = new DateTime(2026, 4, 7, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Restoration of a local library",
-                            DonorId = 107,
-                            Status = "In Progress",
-                            SupervisorId = 1
-                        },
-                        new
-                        {
-                            Id = 118,
-                            Amount = 2500m,
-                            CategoryId = 103,
-                            Date = new DateTime(2026, 4, 9, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Nutrition kits for pregnant women",
-                            DonorId = 108,
-                            Status = "Closed",
-                            SupervisorId = 1
-                        },
-                        new
-                        {
-                            Id = 119,
-                            Amount = 4200m,
-                            CategoryId = 105,
-                            Date = new DateTime(2026, 4, 10, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Vocational training for unemployed youth",
-                            DonorId = 109,
-                            Status = "Open",
-                            SupervisorId = 1
-                        },
-                        new
-                        {
-                            Id = 120,
-                            Amount = 8000m,
-                            CategoryId = 102,
-                            Date = new DateTime(2026, 4, 11, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Rehabilitation center for post-surgery recovery",
-                            DonorId = 110,
-                            Status = "Open",
-                            SupervisorId = 1
-                        },
-                        new
-                        {
-                            Id = 121,
-                            Amount = 5500m,
-                            CategoryId = 104,
-                            Date = new DateTime(2026, 4, 12, 10, 30, 0, 0, DateTimeKind.Utc),
-                            Description = "Clean Water for primary school",
-                            DonorId = 111,
-                            Status = "Open",
-                            SupervisorId = 1
-                        },
-                        new
-                        {
-                            Id = 122,
-                            Amount = 2500m,
-                            CategoryId = 103,
-                            Date = new DateTime(2026, 4, 13, 9, 15, 0, 0, DateTimeKind.Utc),
-                            Description = "Daily Bread for Homeless",
-                            DonorId = 112,
-                            Status = "Open",
-                            SupervisorId = 1
-                        },
-                        new
-                        {
-                            Id = 123,
-                            Amount = 3000m,
-                            CategoryId = 102,
-                            Date = new DateTime(2026, 4, 13, 10, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Medical kits for rural area",
-                            DonorId = 101,
-                            Status = "Open",
-                            SupervisorId = 1
+                            Description = "Roof repairs for the main dormitory",
+                            Name = "St. Paul Orphanage",
+                            Phone = "+12025550503",
+                            RegistDate = new DateTime(2026, 2, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Status = "Approved",
+                            SupervisorId = 2
                         });
                 });
 
@@ -391,10 +177,13 @@ namespace DonationManagement.Core.Migrations
                     b.Property<DateTime>("DistributionDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("DonationId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("HandledByEmployeeId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Recipient")
+                    b.Property<string>("Notes")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -406,6 +195,8 @@ namespace DonationManagement.Core.Migrations
 
                     b.HasIndex("CaseId");
 
+                    b.HasIndex("DonationId");
+
                     b.HasIndex("HandledByEmployeeId");
 
                     b.ToTable("Distributions");
@@ -413,73 +204,103 @@ namespace DonationManagement.Core.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 101,
+                            Id = 401,
+                            Amount = 3000m,
+                            CaseId = 201,
+                            DistributionDate = new DateTime(2026, 3, 15, 0, 0, 0, 0, DateTimeKind.Utc),
+                            DonationId = 301,
+                            HandledByEmployeeId = 3,
+                            Notes = "Funding provided for wheelchair procurement",
+                            Status = "Completed"
+                        },
+                        new
+                        {
+                            Id = 402,
                             Amount = 500m,
-                            CaseId = 103,
-                            DistributionDate = new DateTime(2026, 1, 26, 0, 0, 0, 0, DateTimeKind.Utc),
-                            HandledByEmployeeId = 1,
-                            Recipient = "Sarah Jenkins",
+                            CaseId = 202,
+                            DistributionDate = new DateTime(2026, 3, 20, 0, 0, 0, 0, DateTimeKind.Utc),
+                            DonationId = 302,
+                            HandledByEmployeeId = 3,
+                            Notes = "First monthly food basket distribution",
                             Status = "Completed"
-                        },
+                        });
+                });
+
+            modelBuilder.Entity("DonationManagement.Core.Entities.Donation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DonorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("SupervisorId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("DonorId");
+
+                    b.HasIndex("SupervisorId");
+
+                    b.ToTable("Donations");
+
+                    b.HasData(
                         new
                         {
-                            Id = 102,
-                            Amount = 1500m,
-                            CaseId = 107,
-                            DistributionDate = new DateTime(2026, 2, 19, 0, 0, 0, 0, DateTimeKind.Utc),
-                            HandledByEmployeeId = 1,
-                            Recipient = "City General Hospital",
-                            Status = "Completed"
-                        },
-                        new
-                        {
-                            Id = 103,
-                            Amount = 800m,
-                            CaseId = 109,
-                            DistributionDate = new DateTime(2026, 3, 5, 0, 0, 0, 0, DateTimeKind.Utc),
-                            HandledByEmployeeId = 1,
-                            Recipient = "Local Refugee Center",
-                            Status = "Completed"
-                        },
-                        new
-                        {
-                            Id = 104,
+                            Id = 301,
                             Amount = 5000m,
-                            CaseId = 102,
-                            DistributionDate = new DateTime(2026, 1, 22, 0, 0, 0, 0, DateTimeKind.Utc),
-                            HandledByEmployeeId = 1,
-                            Recipient = "Health Services Dept",
-                            Status = "Processing"
+                            CategoryId = 102,
+                            Date = new DateTime(2026, 3, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Annual CSR contribution for Healthcare",
+                            DonorId = 103,
+                            Status = "Completed",
+                            SupervisorId = 2
                         },
                         new
                         {
-                            Id = 105,
-                            Amount = 2000m,
-                            CaseId = 106,
-                            DistributionDate = new DateTime(2026, 2, 12, 0, 0, 0, 0, DateTimeKind.Utc),
-                            HandledByEmployeeId = 1,
-                            Recipient = "Diabetic Care Clinic",
-                            Status = "Completed"
+                            Id = 302,
+                            Amount = 1000m,
+                            CategoryId = 103,
+                            Date = new DateTime(2026, 3, 10, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Personal gift for food drive",
+                            DonorId = 101,
+                            Status = "Completed",
+                            SupervisorId = 2
                         },
                         new
                         {
-                            Id = 106,
-                            Amount = 1200m,
-                            CaseId = 121,
-                            DistributionDate = new DateTime(2026, 4, 12, 11, 0, 0, 0, DateTimeKind.Utc),
-                            HandledByEmployeeId = 1,
-                            Recipient = "Alexandria School",
-                            Status = "Completed"
-                        },
-                        new
-                        {
-                            Id = 107,
-                            Amount = 2000m,
-                            CaseId = 122,
-                            DistributionDate = new DateTime(2026, 4, 13, 9, 30, 0, 0, DateTimeKind.Utc),
-                            HandledByEmployeeId = 1,
-                            Recipient = "Public Shelter",
-                            Status = "Completed"
+                            Id = 303,
+                            Amount = 2500m,
+                            CategoryId = 105,
+                            Date = new DateTime(2026, 4, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Emergency relief fund contribution",
+                            DonorId = 102,
+                            Status = "Pending",
+                            SupervisorId = 2
                         });
                 });
 
@@ -490,6 +311,10 @@ namespace DonationManagement.Core.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -510,6 +335,10 @@ namespace DonationManagement.Core.Migrations
                     b.Property<DateTime>("RegisterDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Donors");
@@ -518,110 +347,35 @@ namespace DonationManagement.Core.Migrations
                         new
                         {
                             Id = 101,
+                            Address = "Los Angeles, USA",
                             Email = "james.w@example.com",
                             Name = "James Wilson",
                             Password = "$2a$11$/u2qj94UTkAB2m91.SYmX.WR6ShENYTBx2SK5SAKhr3RLq2Ux603W",
                             Phone = "+12025550101",
-                            RegisterDate = new DateTime(2025, 1, 10, 10, 0, 0, 0, DateTimeKind.Utc)
+                            RegisterDate = new DateTime(2025, 1, 10, 10, 0, 0, 0, DateTimeKind.Utc),
+                            Type = "Individual"
                         },
                         new
                         {
                             Id = 102,
+                            Address = "Chicago, USA",
                             Email = "mary.j@example.com",
                             Name = "Mary Johnson",
                             Password = "$2a$11$/u2qj94UTkAB2m91.SYmX.WR6ShENYTBx2SK5SAKhr3RLq2Ux603W",
                             Phone = "+12025550102",
-                            RegisterDate = new DateTime(2025, 2, 5, 12, 30, 0, 0, DateTimeKind.Utc)
+                            RegisterDate = new DateTime(2025, 2, 5, 12, 30, 0, 0, DateTimeKind.Utc),
+                            Type = "Individual"
                         },
                         new
                         {
                             Id = 103,
-                            Email = "robert.s@example.com",
-                            Name = "Robert Smith",
+                            Address = "San Francisco, USA",
+                            Email = "donations@globaltech.com",
+                            Name = "Global Tech Corp",
                             Password = "$2a$11$/u2qj94UTkAB2m91.SYmX.WR6ShENYTBx2SK5SAKhr3RLq2Ux603W",
-                            Phone = "+12025550103",
-                            RegisterDate = new DateTime(2025, 3, 12, 9, 15, 0, 0, DateTimeKind.Utc)
-                        },
-                        new
-                        {
-                            Id = 104,
-                            Email = "patricia.b@example.com",
-                            Name = "Patricia Brown",
-                            Password = "$2a$11$/u2qj94UTkAB2m91.SYmX.WR6ShENYTBx2SK5SAKhr3RLq2Ux603W",
-                            Phone = "+12025550104",
-                            RegisterDate = new DateTime(2025, 4, 18, 14, 45, 0, 0, DateTimeKind.Utc)
-                        },
-                        new
-                        {
-                            Id = 105,
-                            Email = "michael.d@example.com",
-                            Name = "Michael Davis",
-                            Password = "$2a$11$/u2qj94UTkAB2m91.SYmX.WR6ShENYTBx2SK5SAKhr3RLq2Ux603W",
-                            Phone = "+12025550105",
-                            RegisterDate = new DateTime(2025, 5, 20, 16, 20, 0, 0, DateTimeKind.Utc)
-                        },
-                        new
-                        {
-                            Id = 106,
-                            Email = "linda.m@example.com",
-                            Name = "Linda Miller",
-                            Password = "$2a$11$/u2qj94UTkAB2m91.SYmX.WR6ShENYTBx2SK5SAKhr3RLq2Ux603W",
-                            Phone = "+12025550106",
-                            RegisterDate = new DateTime(2025, 6, 22, 11, 10, 0, 0, DateTimeKind.Utc)
-                        },
-                        new
-                        {
-                            Id = 107,
-                            Email = "david.t@example.com",
-                            Name = "David Taylor",
-                            Password = "$2a$11$/u2qj94UTkAB2m91.SYmX.WR6ShENYTBx2SK5SAKhr3RLq2Ux603W",
-                            Phone = "+12025550107",
-                            RegisterDate = new DateTime(2025, 7, 30, 8, 50, 0, 0, DateTimeKind.Utc)
-                        },
-                        new
-                        {
-                            Id = 108,
-                            Email = "elizabeth.a@example.com",
-                            Name = "Elizabeth Anderson",
-                            Password = "$2a$11$/u2qj94UTkAB2m91.SYmX.WR6ShENYTBx2SK5SAKhr3RLq2Ux603W",
-                            Phone = "+12025550108",
-                            RegisterDate = new DateTime(2025, 8, 14, 13, 25, 0, 0, DateTimeKind.Utc)
-                        },
-                        new
-                        {
-                            Id = 109,
-                            Email = "richard.t@example.com",
-                            Name = "Richard Thomas",
-                            Password = "$2a$11$/u2qj94UTkAB2m91.SYmX.WR6ShENYTBx2SK5SAKhr3RLq2Ux603W",
-                            Phone = "+12025550109",
-                            RegisterDate = new DateTime(2025, 9, 5, 15, 55, 0, 0, DateTimeKind.Utc)
-                        },
-                        new
-                        {
-                            Id = 110,
-                            Email = "barbara.j@example.com",
-                            Name = "Barbara Jackson",
-                            Password = "$2a$11$/u2qj94UTkAB2m91.SYmX.WR6ShENYTBx2SK5SAKhr3RLq2Ux603W",
-                            Phone = "+12025550110",
-                            RegisterDate = new DateTime(2025, 10, 1, 10, 5, 0, 0, DateTimeKind.Utc)
-                        },
-                        new
-                        {
-                            Id = 111,
-                            Email = "william.w@example.com",
-                            Name = "William White",
-                            Password = "$2a$11$/u2qj94UTkAB2m91.SYmX.WR6ShENYTBx2SK5SAKhr3RLq2Ux603W",
-                            Phone = "+12025550111",
-                            RegisterDate = new DateTime(2026, 4, 12, 10, 0, 0, 0, DateTimeKind.Utc)
-                        },
-                        new
-                        {
-                            Id = 112,
-                            Email = "susan.g@example.com",
-                            Name = "Susan Green",
-                            Password = "$2a$11$/u2qj94UTkAB2m91.SYmX.WR6ShENYTBx2SK5SAKhr3RLq2Ux603W",
-                            Phone = "+12025550112",
-                            RegisterDate = new DateTime(2026, 4, 13, 8, 0, 0, 0, DateTimeKind.Utc)
+                            Phone = "+12025550300",
+                            RegisterDate = new DateTime(2025, 3, 12, 9, 15, 0, 0, DateTimeKind.Utc),
+                            Type = "Corporate"
                         });
                 });
 
@@ -706,17 +460,61 @@ namespace DonationManagement.Core.Migrations
                     b.HasOne("DonationManagement.Core.Entities.Category", "Category")
                         .WithMany("Cases")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DonationManagement.Core.Entities.Donor", "Donor")
-                        .WithMany("Cases")
-                        .HasForeignKey("DonorId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("DonationManagement.Core.Entities.Employee", "Supervisor")
-                        .WithMany("RegisteredCases")
+                        .WithMany("CasesRegistered")
+                        .HasForeignKey("SupervisorId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Supervisor");
+                });
+
+            modelBuilder.Entity("DonationManagement.Core.Entities.Distribution", b =>
+                {
+                    b.HasOne("DonationManagement.Core.Entities.Case", "Case")
+                        .WithMany("Distributions")
+                        .HasForeignKey("CaseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("DonationManagement.Core.Entities.Donation", "Donation")
+                        .WithMany("Distributions")
+                        .HasForeignKey("DonationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("DonationManagement.Core.Entities.Employee", "HandledByEmployee")
+                        .WithMany("DistributionsHandled")
+                        .HasForeignKey("HandledByEmployeeId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Case");
+
+                    b.Navigation("Donation");
+
+                    b.Navigation("HandledByEmployee");
+                });
+
+            modelBuilder.Entity("DonationManagement.Core.Entities.Donation", b =>
+                {
+                    b.HasOne("DonationManagement.Core.Entities.Category", "Category")
+                        .WithMany("Donations")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("DonationManagement.Core.Entities.Donor", "Donor")
+                        .WithMany("Donations")
+                        .HasForeignKey("DonorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("DonationManagement.Core.Entities.Employee", "Supervisor")
+                        .WithMany("DonationsRegistered")
                         .HasForeignKey("SupervisorId")
                         .OnDelete(DeleteBehavior.SetNull);
 
@@ -727,24 +525,6 @@ namespace DonationManagement.Core.Migrations
                     b.Navigation("Supervisor");
                 });
 
-            modelBuilder.Entity("DonationManagement.Core.Entities.Distribution", b =>
-                {
-                    b.HasOne("DonationManagement.Core.Entities.Case", "Case")
-                        .WithMany("Distributions")
-                        .HasForeignKey("CaseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DonationManagement.Core.Entities.Employee", "HandledByEmployee")
-                        .WithMany("DistributionsHandled")
-                        .HasForeignKey("HandledByEmployeeId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Case");
-
-                    b.Navigation("HandledByEmployee");
-                });
-
             modelBuilder.Entity("DonationManagement.Core.Entities.Case", b =>
                 {
                     b.Navigation("Distributions");
@@ -753,18 +533,27 @@ namespace DonationManagement.Core.Migrations
             modelBuilder.Entity("DonationManagement.Core.Entities.Category", b =>
                 {
                     b.Navigation("Cases");
+
+                    b.Navigation("Donations");
+                });
+
+            modelBuilder.Entity("DonationManagement.Core.Entities.Donation", b =>
+                {
+                    b.Navigation("Distributions");
                 });
 
             modelBuilder.Entity("DonationManagement.Core.Entities.Donor", b =>
                 {
-                    b.Navigation("Cases");
+                    b.Navigation("Donations");
                 });
 
             modelBuilder.Entity("DonationManagement.Core.Entities.Employee", b =>
                 {
+                    b.Navigation("CasesRegistered");
+
                     b.Navigation("DistributionsHandled");
 
-                    b.Navigation("RegisteredCases");
+                    b.Navigation("DonationsRegistered");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,7 +1,7 @@
 {
   "info": {
-    "name": "Donation Management API",
-    "description": "API Collection for Donation Management.",
+    "name": "Donation Management App - Screen Based",
+    "description": "API Collection organized by App Screens. Includes 4 KPIs for each major management screen.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -28,10 +28,10 @@
   },
   "item": [
     {
-      "name": "Account",
+      "name": "01. Auth Screen",
       "item": [
         {
-          "name": "Login",
+          "name": "Employee Login",
           "event": [
             {
               "listen": "test",
@@ -76,20 +76,6 @@
         },
         {
           "name": "Donor Login",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var jsonData = pm.response.json();",
-                  "if(jsonData.token) {",
-                  "    pm.collectionVariables.set(\"token\", jsonData.token);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
           "request": {
             "auth": {
               "type": "noauth"
@@ -103,7 +89,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"email\": \"ibrahim@donor.com\",\r\n  \"password\": \"StrongPassword123\"\r\n}"
+              "raw": "{\r\n  \"email\": \"james.w@example.com\",\r\n  \"password\": \"12345678\"\r\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/Account/donor-login",
@@ -117,60 +103,14 @@
               ]
             }
           }
-        },
-        {
-          "name": "Donor Signup",
-          "request": {
-            "auth": {
-              "type": "noauth"
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"name\": \"Ibrahim Donor\",\r\n  \"email\": \"ibrahim@donor.com\",\r\n  \"phone\": \"01000000000\",\r\n  \"password\": \"StrongPassword123\"\r\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/Account/donor-signup",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Account",
-                "donor-signup"
-              ]
-            }
-          }
         }
       ]
     },
     {
-      "name": "Dashboard",
+      "name": "02. Dashboard Home",
       "item": [
         {
-          "name": "Full Dashboard Data",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/Dashboard",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Dashboard"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Get KPIs",
+          "name": "Main KPIs (4)",
           "request": {
             "method": "GET",
             "url": {
@@ -183,11 +123,12 @@
                 "Dashboard",
                 "kpis"
               ]
-            }
+            },
+            "description": "Returns: Total Donations, Active Cases, Total Donors, Funds Distributed with month-over-month trends."
           }
         },
         {
-          "name": "Get Last Donations",
+          "name": "Last 5 Donations",
           "request": {
             "method": "GET",
             "url": {
@@ -204,7 +145,7 @@
           }
         },
         {
-          "name": "Get Last Distributions",
+          "name": "Last 5 Distributions",
           "request": {
             "method": "GET",
             "url": {
@@ -221,7 +162,7 @@
           }
         },
         {
-          "name": "Get Donation Trends",
+          "name": "Charts & Trends",
           "request": {
             "method": "GET",
             "url": {
@@ -240,532 +181,28 @@
       ]
     },
     {
-      "name": "Cases",
+      "name": "03. Donors Screen",
       "item": [
         {
-          "name": "Get All Cases",
+          "name": "Donors KPIs (4)",
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/Cases",
+              "raw": "{{baseUrl}}/api/Donors/stats",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
-                "Cases"
+                "Donors",
+                "stats"
               ]
-            }
-          }
-        },
-        {
-          "name": "Get Cases Paged",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/Cases/paged?page=1&pageSize=20",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Cases",
-                "paged"
-              ],
-              "query": [
-                {
-                  "key": "page",
-                  "value": "1"
-                },
-                {
-                  "key": "pageSize",
-                  "value": "20"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "name": "Get Case By Id",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/Cases/1",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Cases",
-                "1"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Create Case",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"amount\": 1000,\r\n  \"description\": \"Medical Case\",\r\n  \"status\": \"Pending\",\r\n  \"date\": \"2026-03-29T00:00:00Z\",\r\n  \"supervisorId\": 1,\r\n  \"donorId\": 1,\r\n  \"categoryId\": 1\r\n}"
             },
-            "url": {
-              "raw": "{{baseUrl}}/api/Cases",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Cases"
-              ]
-            }
+            "description": "Suggested KPIs: Total Donors, Monthly Growth, Total Contributed, Avg Donation Amount."
           }
         },
         {
-          "name": "Update Case",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"amount\": 1200,\r\n  \"description\": \"Updated Medical Case\",\r\n  \"status\": \"Active\",\r\n  \"date\": \"2026-03-29T00:00:00Z\",\r\n  \"supervisorId\": 1,\r\n  \"donorId\": 1,\r\n  \"categoryId\": 1\r\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/Cases/1",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Cases",
-                "1"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Delete Case",
-          "request": {
-            "method": "DELETE",
-            "url": {
-              "raw": "{{baseUrl}}/api/Cases/1",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Cases",
-                "1"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Get Case Distributions",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/Cases/1/distributions",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Cases",
-                "1",
-                "distributions"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Get Remaining Amount",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/Cases/1/remaining",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Cases",
-                "1",
-                "remaining"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Is Fully Funded",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/Cases/1/isfunded",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Cases",
-                "1",
-                "isfunded"
-              ]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Categories",
-      "item": [
-        {
-          "name": "Get All Categories",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/Categories",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Categories"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Get Categories Paged",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/Categories/paged?page=1&pageSize=20",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Categories",
-                "paged"
-              ],
-              "query": [
-                {
-                  "key": "page",
-                  "value": "1"
-                },
-                {
-                  "key": "pageSize",
-                  "value": "20"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "name": "Get Category By Id",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/Categories/1",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Categories",
-                "1"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Create Category",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"type\": \"Health\",\r\n  \"description\": \"Medical and healthcare related\"\r\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/Categories",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Categories"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Update Category",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"type\": \"Health & Wellness\",\r\n  \"description\": \"Medical and healthcare related\"\r\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/Categories/1",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Categories",
-                "1"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Delete Category",
-          "request": {
-            "method": "DELETE",
-            "url": {
-              "raw": "{{baseUrl}}/api/Categories/1",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Categories",
-                "1"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Get Category Cases",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/Categories/1/cases",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Categories",
-                "1",
-                "cases"
-              ]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Distributions",
-      "item": [
-        {
-          "name": "Get All Distributions",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/Distributions",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Distributions"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Get Distributions Paged",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/Distributions/paged?page=1&pageSize=20",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Distributions",
-                "paged"
-              ],
-              "query": [
-                {
-                  "key": "page",
-                  "value": "1"
-                },
-                {
-                  "key": "pageSize",
-                  "value": "20"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "name": "Get Distribution By Id",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/Distributions/1",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Distributions",
-                "1"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Create Distribution",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"amount\": 500,\n  \"distributionDate\": \"2026-03-29T00:00:00Z\",\n  \"status\": \"Completed\",\n  \"recipient\": \"John Recipient\",\n  \"caseId\": 1,\n  \"handledByEmployeeId\": 1\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/Distributions",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Distributions"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Update Distribution",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"amount\": 600,\n  \"distributionDate\": \"2026-03-29T00:00:00Z\",\n  \"status\": \"Completed\",\n  \"recipient\": \"John Recipient Updated\",\n  \"caseId\": 1,\n  \"handledByEmployeeId\": 1\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/Distributions/1",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Distributions",
-                "1"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Delete Distribution",
-          "request": {
-            "method": "DELETE",
-            "url": {
-              "raw": "{{baseUrl}}/api/Distributions/1",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Distributions",
-                "1"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Get Distributions By Case",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/Distributions/bycase/1",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Distributions",
-                "bycase",
-                "1"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Distribute Evenly",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"totalAmount\": 1000,\r\n  \"autoDistribute\": true\r\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/Distributions/even",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Distributions",
-                "even"
-              ]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Donors",
-      "item": [
-        {
-          "name": "Get All Donors",
+          "name": "All Donors List",
           "request": {
             "method": "GET",
             "url": {
@@ -781,51 +218,7 @@
           }
         },
         {
-          "name": "Get Donors Paged",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/Donors/paged?page=1&pageSize=20",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Donors",
-                "paged"
-              ],
-              "query": [
-                {
-                  "key": "page",
-                  "value": "1"
-                },
-                {
-                  "key": "pageSize",
-                  "value": "20"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "name": "Get Donor By Id",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/Donors/1",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Donors",
-                "1"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Create Donor",
+          "name": "Add New Donor",
           "request": {
             "method": "POST",
             "header": [
@@ -836,7 +229,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"name\": \"John Doe\",\r\n  \"email\": \"john.doe@example.com\",\r\n  \"phone\": \"01012345678\"\r\n}"
+              "raw": "{\r\n  \"name\": \"Ziad Ahmed\",\r\n  \"email\": \"ziad@example.com\",\r\n  \"phone\": \"01099998888\",\r\n  \"address\": \"New Cairo\",\r\n  \"type\": \"Individual\"\r\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/Donors",
@@ -851,7 +244,7 @@
           }
         },
         {
-          "name": "Update Donor",
+          "name": "Edit Donor",
           "request": {
             "method": "PUT",
             "header": [
@@ -862,7 +255,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"name\": \"John Doe Updated\",\r\n  \"email\": \"john.doe@example.com\",\r\n  \"phone\": \"01012345678\"\r\n}"
+              "raw": "{\r\n  \"name\": \"Ziad Ahmed Updated\",\r\n  \"email\": \"ziad.upd@example.com\",\r\n  \"phone\": \"01099997777\",\r\n  \"address\": \"Zayed City\",\r\n  \"type\": \"Individual\"\r\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/Donors/1",
@@ -895,19 +288,19 @@
           }
         },
         {
-          "name": "Get Donor Cases",
+          "name": "Donor Profile & Donations",
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/Donors/1/cases",
+              "raw": "{{baseUrl}}/api/Donors/101/donations",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "Donors",
-                "1",
-                "cases"
+                "101",
+                "donations"
               ]
             }
           }
@@ -915,10 +308,283 @@
       ]
     },
     {
-      "name": "Employees",
+      "name": "04. Donations Screen (In)",
       "item": [
         {
-          "name": "Get All Employees",
+          "name": "Donation Stats (4 KPIs)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/Donations/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Donations",
+                "stats"
+              ]
+            },
+            "description": "Suggested KPIs: Monthly Total, Transaction Count, Top Category, Pending Donations."
+          }
+        },
+        {
+          "name": "List All Donations",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/Donations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Donations"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Register New Donation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"amount\": 5000,\r\n  \"description\": \"Monthly Contribution\",\r\n  \"status\": \"Completed\",\r\n  \"date\": \"2026-04-16T12:00:00Z\",\r\n  \"donorId\": 101,\r\n  \"categoryId\": 101,\r\n  \"supervisorId\": 1\r\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/Donations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Donations"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "05. Cases Screen (Beneficiaries)",
+      "item": [
+        {
+          "name": "Cases Stats (4 KPIs)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/Cases/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Cases",
+                "stats"
+              ]
+            },
+            "description": "Suggested KPIs: Total Cases, Pending Approvals, Emergency Cases, Fully Funded Cases."
+          }
+        },
+        {
+          "name": "List All Cases",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/Cases",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Cases"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Register New Case",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Ahmed Mohamed\",\r\n  \"phone\": \"01011112222\",\r\n  \"address\": \"Alexandria, Egypt\",\r\n  \"registDate\": \"2026-04-16T00:00:00Z\",\r\n  \"status\": \"Approved\",\r\n  \"description\": \"Needs financial support for tuition\",\r\n  \"categoryId\": 101,\r\n  \"supervisorId\": 1\r\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/Cases",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Cases"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "06. Distributions Screen (Out)",
+      "item": [
+        {
+          "name": "Distribution Stats (4 KPIs)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/Distributions/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Distributions",
+                "stats"
+              ]
+            },
+            "description": "Suggested KPIs: Total Distributed, Beneficiaries Served, Avg Distribution, Remaining Balance."
+          }
+        },
+        {
+          "name": "List All Distributions",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/Distributions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Distributions"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Record Distribution",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"amount\": 1000,\r\n  \"distributionDate\": \"2026-04-16T15:00:00Z\",\r\n  \"status\": \"Completed\",\r\n  \"notes\": \"Handed over in person\",\r\n  \"caseId\": 201,\r\n  \"donationId\": 301,\r\n  \"handledByEmployeeId\": 1\r\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/Distributions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Distributions"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "07. Profile & Employee History",
+      "item": [
+        {
+          "name": "Employee Stats (4 KPIs)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/Employees/1/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Employees",
+                "1",
+                "stats"
+              ]
+            },
+            "description": "Suggested KPIs: My Total Donations, My Assigned Cases, Monthly Performance, Success Rate."
+          }
+        },
+        {
+          "name": "My Registered Cases",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/Employees/1/registered-cases",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Employees",
+                "1",
+                "registered-cases"
+              ]
+            }
+          }
+        },
+        {
+          "name": "My Registered Donations",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/Employees/1/registered-donations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Employees",
+                "1",
+                "registered-donations"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "08. Employees Management Screen",
+      "item": [
+        {
+          "name": "Employee Stats (4 KPIs)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/Employees/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Employees",
+                "stats"
+              ]
+            },
+            "description": "Suggested KPIs: Total Employees, Admin Count, Active Supervisors, Monthly Activity Rate."
+          }
+        },
+        {
+          "name": "List All Employees",
           "request": {
             "method": "GET",
             "url": {
@@ -934,51 +600,7 @@
           }
         },
         {
-          "name": "Get Employees Paged",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/Employees/paged?page=1&pageSize=20",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Employees",
-                "paged"
-              ],
-              "query": [
-                {
-                  "key": "page",
-                  "value": "1"
-                },
-                {
-                  "key": "pageSize",
-                  "value": "20"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "name": "Get Employee By Id",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/Employees/1",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Employees",
-                "1"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Create Employee",
+          "name": "Add New Employee",
           "request": {
             "method": "POST",
             "header": [
@@ -989,7 +611,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"name\": \"Jane Smith\",\r\n  \"email\": \"jane.smith@example.com\",\r\n  \"phone\": \"01123456789\",\r\n  \"address\": \"123 Cairo, Egypt\",\r\n  \"role\": \"Admin\",\r\n  \"username\": \"jane_admin\",\r\n  \"password\": \"password123\"\r\n}"
+              "raw": "{\r\n  \"name\": \"Sameh Refaat\",\r\n  \"username\": \"sameh.r\",\r\n  \"password\": \"Pass123!\",\r\n  \"role\": \"Supervisor\",\r\n  \"phone\": \"01066665555\",\r\n  \"address\": \"Suez, Egypt\",\r\n  \"email\": \"sameh@example.com\"\r\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/Employees",
@@ -1004,7 +626,7 @@
           }
         },
         {
-          "name": "Update Employee",
+          "name": "Edit Employee",
           "request": {
             "method": "PUT",
             "header": [
@@ -1015,7 +637,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"name\": \"Jane Smith\",\r\n  \"email\": \"jane.smith@example.com\",\r\n  \"phone\": \"01123456789\",\r\n  \"address\": \"123 Cairo, Egypt\",\r\n  \"role\": \"Manager\",\r\n  \"username\": \"jane_admin\",\r\n  \"password\": \"newpassword123\"\r\n}"
+              "raw": "{\r\n  \"name\": \"Sameh Refaat Updated\",\r\n  \"username\": \"sameh.r\",\r\n  \"password\": \"NewPass123!\",\r\n  \"role\": \"Admin\",\r\n  \"phone\": \"01066664444\",\r\n  \"address\": \"Cairo, Egypt\",\r\n  \"email\": \"sameh.upd@example.com\"\r\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/Employees/1",
@@ -1042,177 +664,6 @@
               "path": [
                 "api",
                 "Employees",
-                "1"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Get Registered Cases",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/Employees/1/registered-cases",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Employees",
-                "1",
-                "registered-cases"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Get Handled Distributions",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/Employees/1/handled-distributions",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Employees",
-                "1",
-                "handled-distributions"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Create Donor (by Employee)",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"name\": \"Donor Name\",\r\n  \"email\": \"donor@example.com\",\r\n  \"phone\": \"01234567890\"\r\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/Employees/donors",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Employees",
-                "donors"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Delete Donor (by Employee)",
-          "request": {
-            "method": "DELETE",
-            "url": {
-              "raw": "{{baseUrl}}/api/Employees/donors/1",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Employees",
-                "donors",
-                "1"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Create Category (by Employee)",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"type\": \"Education\",\r\n  \"description\": \"Education Support\"\r\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/Employees/categories",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Employees",
-                "categories"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Delete Category (by Employee)",
-          "request": {
-            "method": "DELETE",
-            "url": {
-              "raw": "{{baseUrl}}/api/Employees/categories/1",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Employees",
-                "categories",
-                "1"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Create Case (by Employee)",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"amount\": 500,\r\n  \"description\": \"Food for family\",\r\n  \"status\": \"Active\",\r\n  \"date\": \"2026-03-29T00:00:00Z\",\r\n  \"supervisorId\": 1,\r\n  \"donorId\": 1,\r\n  \"categoryId\": 1\r\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/Employees/cases",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Employees",
-                "cases"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Delete Case (by Employee)",
-          "request": {
-            "method": "DELETE",
-            "url": {
-              "raw": "{{baseUrl}}/api/Employees/cases/1",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "Employees",
-                "cases",
                 "1"
               ]
             }

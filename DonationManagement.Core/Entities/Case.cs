@@ -4,25 +4,25 @@ using System.Collections.Generic;
 namespace DonationManagement.Core.Entities
 {
     /// <summary>
-    /// Represents a case that needs funding
+    /// Represents a beneficiary case that needs support
     /// </summary>
     public class Case
     {
         public int Id { get; set; }
-        public decimal Amount { get; set; }         // Total amount needed/pledged
+        public string Name { get; set; } = string.Empty;            // Beneficiary Name
+        public string Phone { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
+        public DateTime RegistDate { get; set; }
+        public string Status { get; set; } = string.Empty;          // e.g., "Pending Review", "Approved", "Funded", "Closed"
         public string Description { get; set; } = string.Empty;
-        public string Status { get; set; } = string.Empty;          // e.g., "Open", "Closed", "In Progress"
-        public DateTime Date { get; set; }          // Case creation date
 
         // Foreign Keys
-        public int? SupervisorId { get; set; }      // Employee who registered (0..1)
-        public int DonorId { get; set; }            // Donor associated (1)
-        public int CategoryId { get; set; }         // Category (1)
+        public int CategoryId { get; set; }                         // Case Category
+        public int? SupervisorId { get; set; }                      // Registered by supervisor (0..1)
 
         // Navigation
-        public Employee? Supervisor { get; set; }
-        public Donor Donor { get; set; } = null!;
         public Category Category { get; set; } = null!;
+        public Employee? Supervisor { get; set; }
 
         // A case can receive many distributions
         public ICollection<Distribution> Distributions { get; set; } = new List<Distribution>();

@@ -5,7 +5,10 @@ using DonationManagement.Api.Services.Interfaces;
 using DonationManagement.Core;
 using DonationManagement.Core.Entities;
 using DonationManagement.Core.Repositories.Interfaces;
-using BCrypt.Net;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DonationManagement.Api.Services.Implementations
 {
@@ -15,6 +18,7 @@ namespace DonationManagement.Api.Services.Implementations
         private readonly IDonorRepository _donorRepo;
         private readonly ICategoryRepository _categoryRepo;
         private readonly ICaseRepository _caseRepo;
+        private readonly IDonationRepository _donationRepo; // NEW
         private readonly IDistributionRepository _distributionRepo;
         private readonly IJwtTokenService _jwtTokenService;
 
@@ -23,6 +27,7 @@ namespace DonationManagement.Api.Services.Implementations
             IDonorRepository donorRepo,
             ICategoryRepository categoryRepo,
             ICaseRepository caseRepo,
+            IDonationRepository donationRepo,
             IDistributionRepository distributionRepo,
             IJwtTokenService jwtTokenService)
         {
@@ -30,6 +35,7 @@ namespace DonationManagement.Api.Services.Implementations
             _donorRepo = donorRepo;
             _categoryRepo = categoryRepo;
             _caseRepo = caseRepo;
+            _donationRepo = donationRepo;
             _distributionRepo = distributionRepo;
             _jwtTokenService = jwtTokenService;
         }
@@ -112,13 +118,18 @@ namespace DonationManagement.Api.Services.Implementations
             return cases.Select(c => c.ToResponse());
         }
 
+        public async Task<IEnumerable<DonationResponse>> GetRegisteredDonationsAsync(int employeeId)
+        {
+            var donations = await _donationRepo.FindAsync(d => d.SupervisorId == employeeId);
+            return donations.Select(d => d.ToResponse());
+        }
+
         public async Task<IEnumerable<DistributionResponse>> GetHandledDistributionsAsync(int employeeId)
         {
             var distributions = await _distributionRepo.FindAsync(d => d.HandledByEmployeeId == employeeId);
             return distributions.Select(d => d.ToResponse());
         }
 
-        // Employee management functions for donors, categories, cases
         public async Task<DonorResponse> CreateDonorAsync(DonorRequest request)
         {
             var donor = new Donor
@@ -126,6 +137,8 @@ namespace DonationManagement.Api.Services.Implementations
                 Name = request.Name,
                 Email = request.Email,
                 Phone = request.Phone,
+                Address = request.Address,
+                Type = request.Type,
                 RegisterDate = DateTime.UtcNow
             };
 
@@ -173,19 +186,20 @@ namespace DonationManagement.Api.Services.Implementations
         {
             var caseEntity = new Case
             {
-                Amount = request.Amount,
-                Description = request.Description,
+                Name = request.Name,
+                Phone = request.Phone,
+                Address = request.Address,
+                RegistDate = request.RegistDate,
                 Status = request.Status,
-                Date = request.Date,
-                SupervisorId = request.SupervisorId,
-                DonorId = request.DonorId,
-                CategoryId = request.CategoryId
+                Description = request.Description,
+                CategoryId = request.CategoryId,
+                SupervisorId = request.SupervisorId
             };
 
             await _caseRepo.AddAsync(caseEntity);
             await _caseRepo.SaveChangesAsync();
 
-            return caseEntity.ToResponse();
+            return (await _caseRepo.GetByIdAsync(caseEntity.Id))!.ToResponse();
         }
 
         public async Task<bool> DeleteCaseAsync(int id)
@@ -200,7 +214,8 @@ namespace DonationManagement.Api.Services.Implementations
 
         public async Task<AuthResponse?> LoginAsync(LoginRequest request)
         {
-            var employees = await _employeeRepo.FindAsync(e => e.Username == request.Username);
+            var username = request.Username.Trim().ToLower();
+            var employees = await _employeeRepo.FindAsync(e => e.Username.ToLower() == username);
             var employee = employees.FirstOrDefault();
 
             if (employee == null || !BCrypt.Net.BCrypt.Verify(request.Password, employee.Password))

@@ -36,15 +36,15 @@ namespace DonationManagement.Api.Services.Implementations
             var startOfLastMonth = startOfThisMonth.AddMonths(-1);
             var endOfLastMonth = startOfThisMonth.AddTicks(-1);
 
-            // Total Donations
-            var totalDonationsAmount = await _context.Cases.SumAsync(c => c.Amount);
-            var thisMonthDonations = await _context.Cases.Where(c => c.Date >= startOfThisMonth).SumAsync(c => c.Amount);
-            var lastMonthDonations = await _context.Cases.Where(c => c.Date >= startOfLastMonth && c.Date <= endOfLastMonth).SumAsync(c => c.Amount);
+            // Total Donations (from Donations table)
+            var totalDonationsAmount = await _context.Donations.SumAsync(d => d.Amount);
+            var thisMonthDonations = await _context.Donations.Where(d => d.Date >= startOfThisMonth).SumAsync(d => d.Amount);
+            var lastMonthDonations = await _context.Donations.Where(d => d.Date >= startOfLastMonth && d.Date <= endOfLastMonth).SumAsync(d => d.Amount);
 
-            // Active Cases
+            // Active Cases (from Cases table)
             var activeCasesCount = await _context.Cases.CountAsync(c => c.Status != "Closed");
-            var thisMonthActive = await _context.Cases.CountAsync(c => c.Date >= startOfThisMonth && c.Status != "Closed");
-            var lastMonthActive = await _context.Cases.CountAsync(c => c.Date >= startOfLastMonth && c.Date <= endOfLastMonth && c.Status != "Closed");
+            var thisMonthActive = await _context.Cases.CountAsync(c => c.RegistDate >= startOfThisMonth && c.Status != "Closed");
+            var lastMonthActive = await _context.Cases.CountAsync(c => c.RegistDate >= startOfLastMonth && c.RegistDate <= endOfLastMonth && c.Status != "Closed");
 
             // Total Donors
             var totalDonorsCount = await _context.Donors.CountAsync();
@@ -59,26 +59,26 @@ namespace DonationManagement.Api.Services.Implementations
             return new DashboardKpis
             {
                 TotalDonations = new KpiItem { Amount = totalDonationsAmount, VsLastMonth = CalculateTrend(thisMonthDonations, lastMonthDonations) },
-                ActiveCases = new KpiItem { Amount = activeCasesCount, VsLastMonth = CalculateTrend(thisMonthActive, lastMonthActive) },
-                TotalDonors = new KpiItem { Amount = totalDonorsCount, VsLastMonth = CalculateTrend(thisMonthDonors, lastMonthDonors) },
+                ActiveCases = new KpiItem { Amount = (decimal)activeCasesCount, VsLastMonth = CalculateTrend(thisMonthActive, lastMonthActive) },
+                TotalDonors = new KpiItem { Amount = (decimal)totalDonorsCount, VsLastMonth = CalculateTrend(thisMonthDonors, lastMonthDonors) },
                 FundsDistributed = new KpiItem { Amount = fundsDistributedAmount, VsLastMonth = CalculateTrend(thisMonthDist, lastMonthDist) }
             };
         }
 
         public async Task<List<RecentDonationResponse>> GetLastDonationsAsync()
         {
-            return await _context.Cases
-                .Include(c => c.Donor)
-                .Include(c => c.Category)
-                .OrderByDescending(c => c.Date)
+            return await _context.Donations
+                .Include(d => d.Donor)
+                .Include(d => d.Category)
+                .OrderByDescending(d => d.Date)
                 .Take(5)
-                .Select(c => new RecentDonationResponse
+                .Select(d => new RecentDonationResponse
                 {
-                    Id = c.Id,
-                    DonorName = c.Donor.Name,
-                    Amount = c.Amount,
-                    Category = c.Category.Type,
-                    Date = c.Date
+                    Id = d.Id,
+                    DonorName = d.Donor.Name,
+                    Amount = d.Amount,
+                    Category = d.Category.Type,
+                    Date = d.Date
                 })
                 .ToListAsync();
         }
@@ -92,7 +92,7 @@ namespace DonationManagement.Api.Services.Implementations
                 .Select(d => new RecentDistributionResponse
                 {
                     Id = d.Id,
-                    CaseName = d.Case.Description,
+                    CaseName = d.Case.Name,
                     Amount = d.Amount,
                     Date = d.DistributionDate
                 })
@@ -105,29 +105,29 @@ namespace DonationManagement.Api.Services.Implementations
 
             // Monthly Trend (Current Year)
             var startOfYear = new DateTime(now.Year, 1, 1);
-            var monthlyTrends = await _context.Cases
-                .Where(c => c.Date >= startOfYear)
-                .GroupBy(c => c.Date.Month)
-                .Select(g => new MonthlyTrend { Month = g.Key, Amount = g.Sum(c => c.Amount) })
+            var monthlyTrends = await _context.Donations
+                .Where(d => d.Date >= startOfYear)
+                .GroupBy(d => d.Date.Month)
+                .Select(g => new MonthlyTrend { Month = g.Key, Amount = g.Sum(d => d.Amount) })
                 .OrderBy(m => m.Month)
                 .ToListAsync();
 
             // Hourly Trend (Last 24 Hours)
             var twentyFourHoursAgo = now.AddHours(-24);
-            var hourlyTrends = await _context.Cases
-                .Where(c => c.Date >= twentyFourHoursAgo)
-                .GroupBy(c => c.Date.Hour)
-                .Select(g => new HourlyTrend { Hour = g.Key, Amount = g.Sum(c => c.Amount) })
+            var hourlyTrends = await _context.Donations
+                .Where(d => d.Date >= twentyFourHoursAgo)
+                .GroupBy(d => d.Date.Hour)
+                .Select(g => new HourlyTrend { Hour = g.Key, Amount = g.Sum(d => d.Amount) })
                 .OrderBy(h => h.Hour)
                 .ToListAsync();
 
             // Weekly Trend (Day of Week)
             var startOfWeek = now.AddDays(-(int)now.DayOfWeek);
-            var weeklyTrends = _context.Cases
-                .Where(c => c.Date >= startOfWeek)
+            var weeklyTrends = _context.Donations
+                .Where(d => d.Date >= startOfWeek)
                 .AsEnumerable()
-                .GroupBy(c => c.Date.DayOfWeek.ToString())
-                .Select(g => new WeeklyTrend { Day = g.Key, Amount = g.Sum(c => c.Amount) })
+                .GroupBy(d => d.Date.DayOfWeek.ToString())
+                .Select(g => new WeeklyTrend { Day = g.Key, Amount = g.Sum(d => d.Amount) })
                 .ToList();
 
             return new DonationTrends

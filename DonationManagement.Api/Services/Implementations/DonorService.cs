@@ -5,19 +5,23 @@ using DonationManagement.Api.Services.Interfaces;
 using DonationManagement.Core;
 using DonationManagement.Core.Entities;
 using DonationManagement.Core.Repositories.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DonationManagement.Api.Services.Implementations
 {
     public class DonorService : IDonorService
     {
         private readonly IDonorRepository _donorRepo;
-        private readonly ICaseRepository _caseRepo;
+        private readonly IDonationRepository _donationRepo; // Updated
         private readonly IJwtTokenService _jwtTokenService;
 
-        public DonorService(IDonorRepository donorRepo, ICaseRepository caseRepo, IJwtTokenService jwtTokenService)
+        public DonorService(IDonorRepository donorRepo, IDonationRepository donationRepo, IJwtTokenService jwtTokenService)
         {
             _donorRepo = donorRepo;
-            _caseRepo = caseRepo;
+            _donationRepo = donationRepo;
             _jwtTokenService = jwtTokenService;
         }
 
@@ -52,6 +56,8 @@ namespace DonationManagement.Api.Services.Implementations
                 Name = request.Name,
                 Email = request.Email,
                 Phone = request.Phone,
+                Address = request.Address, // Added from new schema
+                Type = request.Type,       // Added from new schema
                 RegisterDate = DateTime.UtcNow
             };
 
@@ -69,6 +75,8 @@ namespace DonationManagement.Api.Services.Implementations
             donor.Name = request.Name;
             donor.Email = request.Email;
             donor.Phone = request.Phone;
+            donor.Address = request.Address;
+            donor.Type = request.Type;
 
             _donorRepo.Update(donor);
             await _donorRepo.SaveChangesAsync();
@@ -86,10 +94,10 @@ namespace DonationManagement.Api.Services.Implementations
             return true;
         }
 
-        public async Task<IEnumerable<CaseResponse>> GetDonorCasesAsync(int donorId)
+        public async Task<IEnumerable<DonationResponse>> GetDonorDonationsAsync(int donorId)
         {
-            var cases = await _caseRepo.FindAsync(c => c.DonorId == donorId);
-            return cases.Select(c => c.ToResponse());
+            var donations = await _donationRepo.FindAsync(d => d.DonorId == donorId);
+            return donations.Select(d => d.ToResponse());
         }
 
         public async Task<DonorResponse> SignupAsync(DonorSignupRequest request)
@@ -100,7 +108,8 @@ namespace DonationManagement.Api.Services.Implementations
                 Email = request.Email,
                 Phone = request.Phone,
                 Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
-                RegisterDate = DateTime.UtcNow
+                RegisterDate = DateTime.UtcNow,
+                Type = "Individual" // Default for signup
             };
 
             await _donorRepo.AddAsync(donor);

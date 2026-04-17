@@ -1,14 +1,14 @@
-using Microsoft.AspNetCore.Mvc;
 using DonationManagement.Api.DTOs;
 using DonationManagement.Api.Services.Interfaces;
-
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace DonationManagement.Api.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class CasesController : ControllerBase
     {
         private readonly ICaseService _caseService;
@@ -19,69 +19,51 @@ namespace DonationManagement.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CaseResponse>>> GetAllCases()
+        public async Task<IActionResult> GetAll([FromQuery] int? categoryId)
         {
-            var result = await _caseService.GetAllCasesAsync();
-            return Ok(result);
+            var cases = await _caseService.GetAllCasesAsync(categoryId);
+            return Ok(cases);
         }
 
         [HttpGet("paged")]
-        public async Task<ActionResult<PaginatedResponse<CaseResponse>>> GetCasesPaged([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+        public async Task<IActionResult> GetPaged([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] int? categoryId = null)
         {
-            var result = await _caseService.GetCasesPagedAsync(page, pageSize);
-            return Ok(result);
+            var pagedCases = await _caseService.GetCasesPagedAsync(page, pageSize, categoryId);
+            return Ok(pagedCases);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<CaseResponse>> GetCaseById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var result = await _caseService.GetCaseByIdAsync(id);
-            if (result == null) return NotFound();
-            return Ok(result);
+            var caseEntity = await _caseService.GetCaseByIdAsync(id);
+            if (caseEntity == null) return NotFound();
+            return Ok(caseEntity);
         }
 
+        [Authorize(Roles = "Admin,Supervisor")]
         [HttpPost]
-        public async Task<ActionResult<CaseResponse>> CreateCase(CaseRequest request)
+        public async Task<IActionResult> Create(CaseRequest request)
         {
-            var result = await _caseService.CreateCaseAsync(request);
-            return CreatedAtAction(nameof(GetCaseById), new { id = result.Id }, result);
+            var caseEntity = await _caseService.CreateCaseAsync(request);
+            return CreatedAtAction(nameof(GetById), new { id = caseEntity.Id }, caseEntity);
         }
 
+        [Authorize(Roles = "Admin,Supervisor")]
         [HttpPut("{id}")]
-        public async Task<ActionResult<CaseResponse>> UpdateCase(int id, CaseRequest request)
+        public async Task<IActionResult> Update(int id, CaseRequest request)
         {
-            var result = await _caseService.UpdateCaseAsync(id, request);
-            if (result == null) return NotFound();
-            return Ok(result);
+            var caseEntity = await _caseService.UpdateCaseAsync(id, request);
+            if (caseEntity == null) return NotFound();
+            return Ok(caseEntity);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCase(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var deleted = await _caseService.DeleteCaseAsync(id);
-            if (!deleted) return NotFound();
+            var result = await _caseService.DeleteCaseAsync(id);
+            if (!result) return NotFound();
             return NoContent();
-        }
-
-        [HttpGet("{id}/distributions")]
-        public async Task<ActionResult<IEnumerable<DistributionResponse>>> GetCaseDistributions(int id)
-        {
-            var distributions = await _caseService.GetCaseDistributionsAsync(id);
-            return Ok(distributions);
-        }
-
-        [HttpGet("{id}/remaining")]
-        public async Task<ActionResult<decimal>> GetRemainingAmountNeeded(int id)
-        {
-            var remaining = await _caseService.GetRemainingAmountNeededAsync(id);
-            return Ok(remaining);
-        }
-
-        [HttpGet("{id}/isfunded")]
-        public async Task<ActionResult<bool>> IsFullyFunded(int id)
-        {
-            var funded = await _caseService.IsFullyFundedAsync(id);
-            return Ok(funded);
         }
     }
 }

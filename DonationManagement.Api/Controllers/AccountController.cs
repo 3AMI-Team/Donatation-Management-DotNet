@@ -21,13 +21,21 @@ namespace DonationManagement.Api.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<AuthResponse>> Login(LoginRequest request)
         {
-            var result = await _employeeService.LoginAsync(request);
-            if (result == null)
+            try 
             {
-                return Unauthorized(new { message = "Invalid username or password" });
+                var result = await _employeeService.LoginAsync(request);
+                if (result == null)
+                {
+                    var allEmployees = await _employeeService.GetAllEmployeesAsync();
+                    var usernames = string.Join(", ", allEmployees.Select(e => e.Username));
+                    return Unauthorized(new { message = $"Invalid username or password. DB contains users: [{usernames}]" });
+                }
+                return Ok(result);
             }
-
-            return Ok(result);
+            catch (Exception ex)
+            {
+                return Unauthorized(new { message = "Database or Server Error: " + ex.Message, inner = ex.InnerException?.Message });
+            }
         }
 
         [HttpPost("donor-login")]

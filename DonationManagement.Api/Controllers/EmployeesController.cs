@@ -70,6 +70,13 @@ namespace DonationManagement.Api.Controllers
             return Ok(cases);
         }
 
+        [HttpGet("{id}/registered-donations")]
+        public async Task<ActionResult<IEnumerable<DonationResponse>>> GetRegisteredDonations(int id)
+        {
+            var donations = await _employeeService.GetRegisteredDonationsAsync(id);
+            return Ok(donations);
+        }
+
         [HttpGet("{id}/handled-distributions")]
         public async Task<ActionResult<IEnumerable<DistributionResponse>>> GetHandledDistributions(int id)
         {

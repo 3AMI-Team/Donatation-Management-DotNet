@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using DonationManagement.Api.DTOs;
 using DonationManagement.Api.Services.Interfaces;
-
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 
 namespace DonationManagement.Api.Controllers
@@ -63,11 +64,11 @@ namespace DonationManagement.Api.Controllers
             return NoContent();
         }
 
-        [HttpGet("{id}/cases")]
-        public async Task<ActionResult<IEnumerable<CaseResponse>>> GetDonorCases(int id)
+        [HttpGet("{id}/donations")] // Renamed from /cases
+        public async Task<ActionResult<IEnumerable<DonationResponse>>> GetDonorDonations(int id)
         {
-            var cases = await _donorService.GetDonorCasesAsync(id);
-            return Ok(cases);
+            var donations = await _donorService.GetDonorDonationsAsync(id);
+            return Ok(donations);
         }
     }
 }

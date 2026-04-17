@@ -1,14 +1,14 @@
-using Microsoft.AspNetCore.Mvc;
 using DonationManagement.Api.DTOs;
 using DonationManagement.Api.Services.Interfaces;
-
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace DonationManagement.Api.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class DistributionsController : ControllerBase
     {
         private readonly IDistributionService _distributionService;
@@ -19,62 +19,44 @@ namespace DonationManagement.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<DistributionResponse>>> GetAllDistributions()
+        public async Task<IActionResult> GetAll()
         {
-            var result = await _distributionService.GetAllDistributionsAsync();
-            return Ok(result);
-        }
-
-        [HttpGet("paged")]
-        public async Task<ActionResult<PaginatedResponse<DistributionResponse>>> GetDistributionsPaged([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
-        {
-            var result = await _distributionService.GetDistributionsPagedAsync(page, pageSize);
-            return Ok(result);
+            var distributions = await _distributionService.GetAllDistributionsAsync();
+            return Ok(distributions);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<DistributionResponse>> GetDistributionById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var result = await _distributionService.GetDistributionByIdAsync(id);
-            if (result == null) return NotFound();
-            return Ok(result);
+            var distribution = await _distributionService.GetDistributionByIdAsync(id);
+            if (distribution == null) return NotFound();
+            return Ok(distribution);
         }
 
+        [Authorize(Roles = "Admin,Supervisor")]
         [HttpPost]
-        public async Task<ActionResult<DistributionResponse>> CreateDistribution(DistributionRequest request)
+        public async Task<IActionResult> Create(DistributionRequest request)
         {
-            var result = await _distributionService.CreateDistributionAsync(request);
-            return CreatedAtAction(nameof(GetDistributionById), new { id = result.Id }, result);
+            var distribution = await _distributionService.CreateDistributionAsync(request);
+            return CreatedAtAction(nameof(GetById), new { id = distribution.Id }, distribution);
         }
 
+        [Authorize(Roles = "Admin,Supervisor")]
         [HttpPut("{id}")]
-        public async Task<ActionResult<DistributionResponse>> UpdateDistribution(int id, DistributionRequest request)
+        public async Task<IActionResult> Update(int id, DistributionRequest request)
         {
-            var result = await _distributionService.UpdateDistributionAsync(id, request);
-            if (result == null) return NotFound();
-            return Ok(result);
+            var distribution = await _distributionService.UpdateDistributionAsync(id, request);
+            if (distribution == null) return NotFound();
+            return Ok(distribution);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteDistribution(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var deleted = await _distributionService.DeleteDistributionAsync(id);
-            if (!deleted) return NotFound();
+            var result = await _distributionService.DeleteDistributionAsync(id);
+            if (!result) return NotFound();
             return NoContent();
-        }
-
-        [HttpGet("bycase/{caseId}")]
-        public async Task<ActionResult<IEnumerable<DistributionResponse>>> GetDistributionsByCase(int caseId)
-        {
-            var distributions = await _distributionService.GetDistributionsByCaseAsync(caseId);
-            return Ok(distributions);
-        }
-
-        [HttpPost("even")]
-        public async Task<ActionResult<DistributionResponse[]>> DistributeEvenly(EvenDistributionRequest request)
-        {
-            var distributions = await _distributionService.DistributeEvenlyAsync(request);
-            return Ok(distributions);
         }
     }
 }

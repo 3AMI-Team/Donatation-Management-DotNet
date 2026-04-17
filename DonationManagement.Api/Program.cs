@@ -82,13 +82,18 @@ builder.Services.AddAuthorization();
 
 // Add DbContext
 builder.Services.AddDbContext<DonationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+        sqlOptions => sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(30),
+            errorNumbersToAdd: null)));
 
 // Register services
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IDonorService, DonorService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddScoped<ICaseService, CaseService>();
+builder.Services.AddScoped<IDonationService, DonationService>(); // NEW
+builder.Services.AddScoped<ICaseService, CaseService>();         // Beneficiaries
 builder.Services.AddScoped<IDistributionService, DistributionService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
@@ -98,7 +103,8 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IDonorRepository, DonorRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<ICaseRepository, CaseRepository>();
+builder.Services.AddScoped<IDonationRepository, DonationRepository>(); // NEW
+builder.Services.AddScoped<ICaseRepository, CaseRepository>();         // Beneficiaries
 builder.Services.AddScoped<IDistributionRepository, DistributionRepository>();
 
 var app = builder.Build();
