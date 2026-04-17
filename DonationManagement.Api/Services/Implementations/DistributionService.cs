@@ -15,10 +15,12 @@ namespace DonationManagement.Api.Services.Implementations
     public class DistributionService : IDistributionService
     {
         private readonly IDistributionRepository _distributionRepo;
+        private readonly IDonationRepository _donationRepo;
 
-        public DistributionService(IDistributionRepository distributionRepo)
+        public DistributionService(IDistributionRepository distributionRepo, IDonationRepository donationRepo)
         {
             _distributionRepo = distributionRepo;
+            _donationRepo = donationRepo;
         }
 
         public async Task<IEnumerable<DistributionResponse>> GetAllDistributionsAsync()
@@ -80,6 +82,29 @@ namespace DonationManagement.Api.Services.Implementations
             _distributionRepo.Remove(distribution);
             await _distributionRepo.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<DistributionKpis> GetDistributionKpisAsync()
+        {
+            var distributions = await _distributionRepo.GetAllAsync();
+            var distList = distributions.ToList();
+
+            if (!distList.Any())
+            {
+                var allDonations = await _donationRepo.GetAllAsync();
+                var totalBalance = allDonations.Where(d => d.Status == "Completed").Sum(d => d.Amount);
+                return new DistributionKpis(0, 0, 0, totalBalance);
+            }
+
+            var totalDistributed = distList.Sum(d => d.Amount);
+            var casesServed = distList.Select(d => d.CaseId).Distinct().Count();
+            var avgDistribution = totalDistributed / distList.Count;
+            
+            var completedDonations = await _donationRepo.FindAsync(d => d.Status == "Completed");
+            var totalFund = completedDonations.Sum(d => d.Amount);
+            var remainingBalance = totalFund - totalDistributed;
+
+            return new DistributionKpis(totalDistributed, casesServed, avgDistribution, remainingBalance);
         }
     }
 }

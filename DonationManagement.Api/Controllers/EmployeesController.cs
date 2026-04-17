@@ -40,6 +40,20 @@ namespace DonationManagement.Api.Controllers
             return Ok(result);
         }
 
+        [HttpGet("kpis")]
+        public async Task<ActionResult<EmployeeKpis>> GetKpis()
+        {
+            var result = await _employeeService.GetEmployeeKpisAsync();
+            return Ok(result);
+        }
+
+        [HttpGet("{id}/kpis")]
+        public async Task<ActionResult<EmployeePersonalKpis>> GetPersonalKpis(int id)
+        {
+            var result = await _employeeService.GetEmployeePersonalKpisAsync(id);
+            return Ok(result);
+        }
+
         [HttpPost]
         public async Task<ActionResult<EmployeeResponse>> CreateEmployee(EmployeeRequest request)
         {

@@ -233,5 +233,52 @@ namespace DonationManagement.Api.Services.Implementations
                 token
             );
         }
+
+        public async Task<EmployeeKpis> GetEmployeeKpisAsync()
+        {
+            var employees = await _employeeRepo.GetAllAsync();
+            var employeeList = employees.ToList();
+
+            if (!employeeList.Any())
+                return new EmployeeKpis(0, 0, 0, 0);
+
+            var totalEmployees = employeeList.Count;
+            var adminCount = employeeList.Count(e => e.Role == "Admin");
+            var activeSupervisors = employeeList.Count(e => e.Role == "Supervisor");
+            
+            var thirtyDaysAgo = DateTime.UtcNow.AddDays(-30);
+            
+            var activeDonations = await _donationRepo.FindAsync(d => d.Date >= thirtyDaysAgo);
+            var activeCases = await _caseRepo.FindAsync(c => c.RegistDate >= thirtyDaysAgo);
+            var activeDistributions = await _distributionRepo.FindAsync(d => d.DistributionDate >= thirtyDaysAgo);
+            
+            var activeEmployeeIds = activeDonations.Select(d => d.SupervisorId)
+                .Concat(activeCases.Select(c => c.SupervisorId))
+                .Concat(activeDistributions.Select(d => d.HandledByEmployeeId))
+                .Where(id => id.HasValue)
+                .Select(id => id!.Value)
+                .Distinct()
+                .ToList();
+
+            var monthlyActivityRate = (double)activeEmployeeIds.Count / totalEmployees;
+
+            return new EmployeeKpis(totalEmployees, adminCount, activeSupervisors, monthlyActivityRate);
+        }
+
+        public async Task<EmployeePersonalKpis> GetEmployeePersonalKpisAsync(int employeeId)
+        {
+            var donations = await _donationRepo.FindAsync(d => d.SupervisorId == employeeId);
+            var cases = await _caseRepo.FindAsync(c => c.SupervisorId == employeeId);
+            var distributions = await _distributionRepo.FindAsync(d => d.HandledByEmployeeId == employeeId);
+
+            var donationsAmount = donations.Sum(d => d.Amount);
+            var casesCount = cases.Count();
+            var distCount = distributions.Count();
+            
+            var score = (donations.Count() + casesCount + distCount);
+            var performanceScore = score > 20 ? "High" : score > 5 ? "Medium" : "Low";
+
+            return new EmployeePersonalKpis(donationsAmount, casesCount, distCount, performanceScore);
+        }
     }
 }

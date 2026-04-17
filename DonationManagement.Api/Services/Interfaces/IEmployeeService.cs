@@ -27,5 +27,7 @@ namespace DonationManagement.Api.Services.Interfaces
         Task<bool> DeleteCaseAsync(int id);
 
         Task<AuthResponse?> LoginAsync(LoginRequest request);
+        Task<EmployeeKpis> GetEmployeeKpisAsync();
+        Task<EmployeePersonalKpis> GetEmployeePersonalKpisAsync(int employeeId);
     }
 }

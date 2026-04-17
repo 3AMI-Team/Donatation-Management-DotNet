@@ -12,5 +12,6 @@ namespace DonationManagement.Api.Services.Interfaces
         Task<CaseResponse> CreateCaseAsync(CaseRequest request);
         Task<CaseResponse?> UpdateCaseAsync(int id, CaseRequest request);
         Task<bool> DeleteCaseAsync(int id);
+        Task<CaseKpis> GetCaseKpisAsync();
     }
 }

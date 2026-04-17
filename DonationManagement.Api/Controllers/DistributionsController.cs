@@ -33,6 +33,13 @@ namespace DonationManagement.Api.Controllers
             return Ok(distribution);
         }
 
+        [HttpGet("kpis")]
+        public async Task<IActionResult> GetKpis()
+        {
+            var kpis = await _distributionService.GetDistributionKpisAsync();
+            return Ok(kpis);
+        }
+
         [Authorize(Roles = "Admin,Supervisor")]
         [HttpPost]
         public async Task<IActionResult> Create(DistributionRequest request)

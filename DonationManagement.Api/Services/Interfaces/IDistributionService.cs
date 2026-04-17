@@ -11,5 +11,6 @@ namespace DonationManagement.Api.Services.Interfaces
         Task<DistributionResponse> CreateDistributionAsync(DistributionRequest request);
         Task<DistributionResponse?> UpdateDistributionAsync(int id, DistributionRequest request);
         Task<bool> DeleteDistributionAsync(int id);
+        Task<DistributionKpis> GetDistributionKpisAsync();
     }
 }

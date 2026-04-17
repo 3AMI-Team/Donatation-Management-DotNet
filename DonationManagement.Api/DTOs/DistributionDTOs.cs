@@ -17,4 +17,5 @@ namespace DonationManagement.Api.DTOs
         int? HandledByEmployeeId, 
         string HandledByEmployeeName
     );
+    public record DistributionKpis(decimal TotalDistributed, int CasesServed, decimal AvgDistribution, decimal RemainingBalance);
 }

@@ -188,14 +188,14 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/Donors/stats",
+              "raw": "{{baseUrl}}/api/Donors/kpis",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "Donors",
-                "stats"
+                "kpis"
               ]
             },
             "description": "Suggested KPIs: Total Donors, Monthly Growth, Total Contributed, Avg Donation Amount."
@@ -315,14 +315,14 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/Donations/stats",
+              "raw": "{{baseUrl}}/api/Donations/kpis",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "Donations",
-                "stats"
+                "kpis"
               ]
             },
             "description": "Suggested KPIs: Monthly Total, Transaction Count, Top Category, Pending Donations."
@@ -380,14 +380,14 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/Cases/stats",
+              "raw": "{{baseUrl}}/api/Cases/kpis",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "Cases",
-                "stats"
+                "kpis"
               ]
             },
             "description": "Suggested KPIs: Total Cases, Pending Approvals, Emergency Cases, Fully Funded Cases."
@@ -445,14 +445,14 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/Distributions/stats",
+              "raw": "{{baseUrl}}/api/Distributions/kpis",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "Distributions",
-                "stats"
+                "kpis"
               ]
             },
             "description": "Suggested KPIs: Total Distributed, Beneficiaries Served, Avg Distribution, Remaining Balance."
@@ -510,7 +510,7 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/Employees/1/stats",
+              "raw": "{{baseUrl}}/api/Employees/1/kpis",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -518,7 +518,7 @@
                 "api",
                 "Employees",
                 "1",
-                "stats"
+                "kpis"
               ]
             },
             "description": "Suggested KPIs: My Total Donations, My Assigned Cases, Monthly Performance, Success Rate."
@@ -570,14 +570,14 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/Employees/stats",
+              "raw": "{{baseUrl}}/api/Employees/kpis",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "Employees",
-                "stats"
+                "kpis"
               ]
             },
             "description": "Suggested KPIs: Total Employees, Admin Count, Active Supervisors, Monthly Activity Rate."
@@ -665,6 +665,132 @@
                 "api",
                 "Employees",
                 "1"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "09. Categories Management",
+      "item": [
+        {
+          "name": "All Categories",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/Categories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Categories"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Single Category",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/Categories/101",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Categories",
+                "101"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"type\": \"Health Support\",\r\n  \"description\": \"Medical and Hospitalization aid\"\r\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/Categories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Categories"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"type\": \"Health & Wellness\",\r\n  \"description\": \"Broad medical and wellness support\"\r\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/Categories/101",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Categories",
+                "101"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/Categories/101",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Categories",
+                "101"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Category Related Cases",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/Categories/101/cases",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Categories",
+                "101",
+                "cases"
               ]
             }
           }

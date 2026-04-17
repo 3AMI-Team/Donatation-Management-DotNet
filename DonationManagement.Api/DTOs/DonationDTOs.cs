@@ -15,5 +15,5 @@ namespace DonationManagement.Api.DTOs
         string SupervisorName
     );
 
-    public record DonationKpis(decimal TotalAmount, int CompletedCount, int PendingCount, decimal AvgAmount);
+    public record DonationKpis(decimal MonthlyTotal, int TransactionCount, string TopCategory, decimal PendingAmount);
 }

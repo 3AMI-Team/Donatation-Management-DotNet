@@ -132,5 +132,25 @@ namespace DonationManagement.Api.Services.Implementations
 
             return new AuthResponse(donor.Id, donor.Name, donor.Email, "Donor", token);
         }
+
+        public async Task<DonorKpis> GetDonorKpisAsync()
+        {
+            var donors = await _donorRepo.GetAllAsync();
+            var donorList = donors.ToList();
+            
+            if (!donorList.Any())
+                return new DonorKpis(0, 0, 0, 0);
+
+            var totalDonors = donorList.Count;
+            var newDonorsThisMonth = donorList.Count(d => d.RegisterDate >= DateTime.UtcNow.AddDays(-30));
+            
+            var allDonations = await _donationRepo.GetAllAsync();
+            var donationList = allDonations.Where(d => d.Status == "Completed").ToList();
+            
+            var totalAmount = donationList.Sum(d => d.Amount);
+            var avgDonation = totalAmount / (donationList.Any() ? donationList.Count : 1);
+
+            return new DonorKpis(totalDonors, newDonorsThisMonth, totalAmount, avgDonation);
+        }
     }
 }

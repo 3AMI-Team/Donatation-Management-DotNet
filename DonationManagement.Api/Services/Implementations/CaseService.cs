@@ -115,5 +115,21 @@ namespace DonationManagement.Api.Services.Implementations
             await _caseRepo.SaveChangesAsync();
             return true;
         }
+
+        public async Task<CaseKpis> GetCaseKpisAsync()
+        {
+            var cases = await _caseRepo.GetAllAsync();
+            var caseList = cases.ToList();
+
+            if (!caseList.Any())
+                return new CaseKpis(0, 0, 0, 0);
+
+            var totalCases = caseList.Count;
+            var pendingReview = caseList.Count(c => c.Status == "Pending Review");
+            var activeCases = caseList.Count(c => c.Status == "Approved");
+            var fundedCases = caseList.Count(c => c.Status == "Funded" || c.Status == "Closed");
+
+            return new CaseKpis(totalCases, pendingReview, activeCases, fundedCases);
+        }
     }
 }

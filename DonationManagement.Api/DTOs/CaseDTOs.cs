@@ -15,4 +15,6 @@ namespace DonationManagement.Api.DTOs
         string CategoryName, 
         string SupervisorName
     );
+
+    public record CaseKpis(int TotalCases, int PendingReview, int ActiveCases, int FundedCases);
 }

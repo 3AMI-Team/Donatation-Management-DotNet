@@ -32,6 +32,13 @@ namespace DonationManagement.Api.Controllers
             return Ok(pagedCases);
         }
 
+        [HttpGet("kpis")]
+        public async Task<IActionResult> GetKpis()
+        {
+            var kpis = await _caseService.GetCaseKpisAsync();
+            return Ok(kpis);
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {

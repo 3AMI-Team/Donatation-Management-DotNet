@@ -121,14 +121,26 @@ namespace DonationManagement.Api.Services.Implementations
             var donationList = donations.ToList();
 
             if (!donationList.Any())
-                return new DonationKpis(0, 0, 0, 0);
+                return new DonationKpis(0, 0, "N/A", 0);
 
-            var totalAmount = donationList.Sum(d => d.Amount);
-            var completedCount = donationList.Count(d => d.Status == "Completed");
-            var pendingCount = donationList.Count(d => d.Status == "Pending");
-            var avgAmount = totalAmount / donationList.Count;
+            var monthlyTotal = donationList
+                .Where(d => d.Date >= new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1) && d.Status == "Completed")
+                .Sum(d => d.Amount);
+            
+            var transactionCount = donationList.Count(d => d.Status == "Completed");
+            
+            var topCategory = donationList
+                .Where(d => d.Status == "Completed")
+                .GroupBy(d => d.Category.Type)
+                .OrderByDescending(g => g.Sum(d => d.Amount))
+                .Select(g => g.Key)
+                .FirstOrDefault() ?? "N/A";
+                
+            var pendingAmount = donationList
+                .Where(d => d.Status == "Pending")
+                .Sum(d => d.Amount);
 
-            return new DonationKpis(totalAmount, completedCount, pendingCount, avgAmount);
+            return new DonationKpis(monthlyTotal, transactionCount, topCategory, pendingAmount);
         }
     }
 }

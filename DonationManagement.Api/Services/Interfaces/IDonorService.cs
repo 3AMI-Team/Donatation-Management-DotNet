@@ -18,5 +18,6 @@ namespace DonationManagement.Api.Services.Interfaces
         
         Task<DonorResponse> SignupAsync(DonorSignupRequest request);
         Task<AuthResponse?> LoginAsync(DonorLoginRequest request);
+        Task<DonorKpis> GetDonorKpisAsync();
     }
 }
